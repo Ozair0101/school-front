@@ -1,68 +1,75 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+    min-height: 100vh;
   }
-  a:hover {
-    color: #747bff;
+  
+  * {
+    box-sizing: border-box;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary/30;
+  }
+  
+  .btn-secondary {
+    @apply bg-white dark:bg-card-dark text-primary font-bold py-3 px-6 rounded-lg border-2 border-primary hover:bg-primary/10 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/30;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-card-dark rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 border border-gray-200 dark:border-gray-800;
+  }
+  
+  .exam-card {
+    @apply bg-white dark:bg-card-dark rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col sm:flex-row group cursor-pointer;
+  }
+  
+  .progress-bar {
+    @apply w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden;
+  }
+  
+  .progress-fill {
+    @apply bg-primary h-full transition-all duration-500 ease-out;
+  }
+  
+  .character-path::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-image: repeating-linear-gradient(90deg, #d1d5db 0, #d1d5db 10px, transparent 10px, transparent 20px);
+    z-index: -1;
+    margin-top: -2px;
+  }
+  
+  .dark .character-path::before {
+    background-image: repeating-linear-gradient(90deg, #4b5563 0, #4b5563 10px, transparent 10px, transparent 20px);
+  }
+  
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: confetti 3s linear infinite;
+  }
+  
+  @keyframes confetti {
+    to {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
   }
 }
