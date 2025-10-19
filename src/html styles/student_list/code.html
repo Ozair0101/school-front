@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f0f7ff",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="relative flex min-h-screen w-full flex-col bg-slate-50 dark:bg-slate-900 font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-1">
+<aside class="w-64 flex-col bg-white dark:bg-slate-800 p-6 hidden md:flex shrink-0">
+<div class="flex items-center gap-3 mb-10">
+<div class="w-8 h-8 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">ExamPrep</h2>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Exams</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20 dark:text-white font-semibold" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Students</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">class</span>
+<span>Classes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</aside>
+<div class="flex-grow">
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4 bg-white dark:bg-slate-800 md:bg-transparent md:dark:bg-transparent">
+<div class="flex items-center gap-3">
+<button class="md:hidden flex items-center justify-center rounded-full h-10 w-10 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-2xl font-bold text-slate-900 dark:text-white">Students</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center rounded-full h-10 w-10 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+</svg>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCUuIO9FLKE-uwu5HknaO68EkWTPdcnL3lxpk8sIbeYK-jhiGHsoy0q74C-x7RblQdFDGlynuB1ImaqFrQyZCOsLmt6Vg4GctcS21bcEwyr2t_8T507BOUZxb8UP7mJt1TDsqIUsVVb5pN_Nf-iwxcNiqdjD4u7K0v3t7ngQ1a692UizWxkl3g9OZyNPccMLePnUSSkcMikRBupEJ3f1-h6QG3cvs5-3s5uxfQqzG_UBnmwVCSYGX_XcGZt1TDuNNxvajWIsund-4");'></div>
+</div>
+</header>
+<main class="p-6">
+<div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm">
+<div class="p-6 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="relative w-full sm:max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="pl-10 pr-4 py-2 w-full rounded-md border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="Search students..." type="text"/>
+</div>
+<div class="flex gap-2 w-full sm:w-auto">
+<button class="flex items-center justify-center gap-2 w-1/2 sm:w-auto text-sm font-semibold border border-slate-300 dark:border-slate-600 px-4 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-base">filter_list</span>
+<span>Filter</span>
+</button>
+<button class="flex items-center justify-center gap-2 w-1/2 sm:w-auto text-sm font-semibold bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-base">add</span>
+<span>Add Student</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+<thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-300">
+<tr>
+<th class="p-6" scope="col">
+<input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/>
+</th>
+<th class="p-6 font-semibold" scope="col">Student Name</th>
+<th class="p-6 font-semibold" scope="col">Class</th>
+<th class="p-6 font-semibold" scope="col">Average Score</th>
+<th class="p-6 font-semibold" scope="col">Exams Taken</th>
+<th class="p-6 font-semibold" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600/20">
+<td class="p-6"><input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4FBIbq2kMMTmBlvIwPeqH1lU2-46o_xefof2gvhWy7hUflmDY6Q-uGrk_sm0g5LaTTIkXcFbOLKOuRCupm0IFKGpO1VzpvP_zsrfm25Y6sPMefbo2yPSxNSNZtVtVEI9FN9wRoAU-BED9dMqqmEFfi7uRIpBk75nOCVg3nZwThLSfBG-ZroW7g0ud47ETJguCgd0nUXaA_6p7xpo6Uk6BAY15nxKnFcsJyo440dDHqNAagsfqWdasJV29j4U07_-xzdf4r--3Zhs");'></div>
+<span>Ahmad Wali</span>
+</div>
+</td>
+<td class="p-6">Grade 10 - A</td>
+<td class="p-6">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
+<div class="w-[92%] h-2 bg-green-500 rounded-full"></div>
+</div>
+<span class="font-medium text-green-600 dark:text-green-400">92%</span>
+</div>
+</td>
+<td class="p-6">12</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">visibility</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">edit</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><span class="material-symbols-outlined text-base">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600/20">
+<td class="p-6"><input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4FBIbq2kMMTmBlvIwPeqH1lU2-46o_xefof2gvhWy7hUflmDY6Q-uGrk_sm0g5LaTTIkXcFbOLKOuRCupm0IFKGpO1VzpvP_zsrfm25Y6sPMefbo2yPSxNSNZtVtVEI9FN9wRoAU-BED9dMqqmEFfi7uRIpBk75nOCVg3nZwThLSfBG-ZroW7g0ud47ETJguCgd0nUXaA_6p7xpo6Uk6BAY15nxKnFcsJyo440dDHqNAagsfqWdasJV29j4U07_-xzdf4r--3Zhs");'></div>
+<span>Fatima Zahra</span>
+</div>
+</td>
+<td class="p-6">Grade 10 - B</td>
+<td class="p-6">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
+<div class="w-[85%] h-2 bg-yellow-500 rounded-full"></div>
+</div>
+<span class="font-medium text-yellow-600 dark:text-yellow-400">85%</span>
+</div>
+</td>
+<td class="p-6">12</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">visibility</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">edit</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><span class="material-symbols-outlined text-base">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600/20">
+<td class="p-6"><input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4FBIbq2kMMTmBlvIwPeqH1lU2-46o_xefof2gvhWy7hUflmDY6Q-uGrk_sm0g5LaTTIkXcFbOLKOuRCupm0IFKGpO1VzpvP_zsrfm25Y6sPMefbo2yPSxNSNZtVtVEI9FN9wRoAU-BED9dMqqmEFfi7uRIpBk75nOCVg3nZwThLSfBG-ZroW7g0ud47ETJguCgd0nUXaA_6p7xpo6Uk6BAY15nxKnFcsJyo440dDHqNAagsfqWdasJV29j4U07_-xzdf4r--3Zhs");'></div>
+<span>Omar Khan</span>
+</div>
+</td>
+<td class="p-6">Grade 11 - A</td>
+<td class="p-6">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
+<div class="w-[78%] h-2 bg-orange-500 rounded-full"></div>
+</div>
+<span class="font-medium text-orange-600 dark:text-orange-400">78%</span>
+</div>
+</td>
+<td class="p-6">11</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">visibility</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">edit</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><span class="material-symbols-outlined text-base">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600/20">
+<td class="p-6"><input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4FBIbq2kMMTmBlvIwPeqH1lU2-46o_xefof2gvhWy7hUflmDY6Q-uGrk_sm0g5LaTTIkXcFbOLKOuRCupm0IFKGpO1VzpvP_zsrfm25Y6sPMefbo2yPSxNSNZtVtVEI9FN9wRoAU-BED9dMqqmEFfi7uRIpBk75nOCVg3nZwThLSfBG-ZroW7g0ud47ETJguCgd0nUXaA_6p7xpo6Uk6BAY15nxKnFcsJyo440dDHqNAagsfqWdasJV29j4U07_-xzdf4r--3Zhs");'></div>
+<span>Layla Ahmadi</span>
+</div>
+</td>
+<td class="p-6">Grade 9 - C</td>
+<td class="p-6">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
+<div class="w-[95%] h-2 bg-green-500 rounded-full"></div>
+</div>
+<span class="font-medium text-green-600 dark:text-green-400">95%</span>
+</div>
+</td>
+<td class="p-6">14</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">visibility</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">edit</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><span class="material-symbols-outlined text-base">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-600/20">
+<td class="p-6"><input class="rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-900 text-primary focus:ring-primary/50" type="checkbox"/></td>
+<td class="p-6 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4FBIbq2kMMTmBlvIwPeqH1lU2-46o_xefof2gvhWy7hUflmDY6Q-uGrk_sm0g5LaTTIkXcFbOLKOuRCupm0IFKGpO1VzpvP_zsrfm25Y6sPMefbo2yPSxNSNZtVtVEI9FN9wRoAU-BED9dMqqmEFfi7uRIpBk75nOCVg3nZwThLSfBG-ZroW7g0ud47ETJguCgd0nUXaA_6p7xpo6Uk6BAY15nxKnFcsJyo440dDHqNAagsfqWdasJV29j4U07_-xzdf4r--3Zhs");'></div>
+<span>Yusuf Popal</span>
+</div>
+</td>
+<td class="p-6">Grade 12 - A</td>
+<td class="p-6">
+<div class="flex items-center gap-2">
+<div class="w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded-full">
+<div class="w-[65%] h-2 bg-red-500 rounded-full"></div>
+</div>
+<span class="font-medium text-red-600 dark:text-red-400">65%</span>
+</div>
+</td>
+<td class="p-6">10</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">visibility</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-base">edit</span></button>
+<button class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><span class="material-symbols-outlined text-base">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+<p>Showing 1 to 5 of 125 students</p>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50" disabled="">Previous</button>
+<button class="w-8 h-8 rounded-md bg-primary text-white">1</button>
+<button class="w-8 h-8 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">2</button>
+<button class="w-8 h-8 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">3</button>
+<span>...</span>
+<button class="w-8 h-8 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">25</button>
+<button class="px-3 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">Next</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+
+</body></html>

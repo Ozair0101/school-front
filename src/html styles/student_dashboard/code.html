@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f0f7ff",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex-grow">
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">ExamPrep</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center rounded-full h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+</svg>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCUuIO9FLKE-uwu5HknaO68EkWTPdcnL3lxpk8sIbeYK-jhiGHsoy0q74C-x7RblQdFDGlynuB1ImaqFrQyZCOsLmt6Vg4GctcS21bcEwyr2t_8T507BOUZxb8UP7mJt1TDsqIUsVVb5pN_Nf-iwxcNiqdjD4u7K0v3t7ngQ1a692UizWxkl3g9OZyNPccMLePnUSSkcMikRBupEJ3f1-h6QG3cvs5-3s5uxfQqzG_UBnmwVCSYGX_XcGZt1TDuNNxvajWIsund-4");'></div>
+</div>
+</header>
+<main class="px-4 sm:px-6 lg:px-20 xl:px-40 py-8">
+<div class="max-w-5xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+<div>
+<h1 class="text-4xl font-bold text-slate-900 dark:text-white">Welcome back, Aisha!</h1>
+<p class="mt-2 text-slate-500 dark:text-slate-400">You have a couple of exams coming up. Good luck!</p>
+</div>
+<img alt="Friendly Mascot" class="w-40 h-auto self-end hidden md:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGiPiiShiYy-RarlQVNiansxKlZEWN9zaYFV1I74mypCsmJKg2E2xjIzhnf_megHiycKZSjL3FZce8NMJduVbWa7jz58ausHWsysfY6FStLInOgTfSioMvmElHF8Mj1UdZ1Ud9TbUeikimHBJQydU0i_-xmPcnhVk3IreTxgncT6cWIvT1xB_-5fjKgwKreb5drXCpFjakL1TvZ4tqjBbW0L54Toon1GQAKF8GZvSfR0_ngfkW68MAcsMxYftSGn_0IOa2RlCtkfU"/>
+</div>
+<div class="space-y-12">
+<div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white px-2 mb-4">Upcoming Exams</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col sm:flex-row group">
+<div class="w-full sm:w-1/3 h-48 sm:h-auto bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDdia3eIyNhhEj3xWv_BxrXULWu9O8x1YjEoKskHx-JJArmE8YA1uyGtjDe5voKQAmo559vMIazLn7UmihILthgbI0nszj-bKZE4dw1je5cXsMdQylE3B2qAbI2LrTFenAP_CbIhDSDpCq3KYMiFLBcwkG29PeQJ8bnqJFTWxDZciDq1wpLFhCnfwNvUabQBvIjh4CQj7rthW4vjJBFFEhR_4-6S4lICyJ4lPuw4-pcCq-HMkj5xOtco85vG_djYRfAZ9koINRNDzk");'></div>
+<div class="p-6 flex flex-col justify-between flex-1">
+<div>
+<p class="text-sm font-medium text-primary">Math</p>
+<p class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-1">Geometry Exam</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Due: May 15, 2024</p>
+</div>
+<button class="mt-4 w-full sm:w-auto self-end bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-primary/90 transition-colors">Start Exam</button>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col sm:flex-row group">
+<div class="w-full sm:w-1/3 h-48 sm:h-auto bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCFxZfHbe_6pBolvZ38NttQY1Ke_SJGXA8FmHkqj9986qh0c41D0_-Q1zL0fp0qsEKy0q0vUSiGMrEyFHCt2pLASSYWkpFX_6SRcyO6gKYeu4OqATAiKjoIaAUgp1A1qBfxPC17OX81jJufZCI83Bz6ihQG93q3JCRnpNUOIKqBZJik3zqn74x8GVPGgQf4Rxz_fDp4IQylBZevo5IL95Fd_eMpEeZEY2AXArKZd3Cm9Dj-0_hnDQKOEXNeL1ekLrDTZLUPBoXf-6M");'></div>
+<div class="p-6 flex flex-col justify-between flex-1">
+<div>
+<p class="text-sm font-medium text-primary">Science</p>
+<p class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-1">Biology Exam</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Due: May 22, 2024</p>
+</div>
+<button class="mt-4 w-full sm:w-auto self-end bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-primary/90 transition-colors">Start Exam</button>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white px-2 mb-4">Past Results</h2>
+<div class="space-y-4">
+<div class="bg-white dark:bg-background-dark/80 p-4 rounded-lg flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-background-dark transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center hidden sm:block" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKaiDwPk_U8zHyM5VM_UFU_2SwVpPXxPKnYQk83-IBR9OYw3tMadn92Mr1yHFM_2ifjVvPUOOt20WHTh0jSWOhvINEB21h6NNk0JbvGdqrvx870EuJW4VQk_cdeMEAJ4rRWU6ImA2kbbR1J56_gRZg1EAfyLO_RdfDvp-E-BcfsLxx3uW0Sm_-YsRPosBBcP5Uz3MUH-XRzXuTPcRL1DmOUMmGjH5Ps6BJ67vahF5y_1kkPDpnwCXYCB3ENcO9sr5eTJ40rR_LEJw");'></div>
+<div>
+<p class="text-sm font-medium text-primary">Math</p>
+<p class="font-bold text-slate-800 dark:text-slate-100">Geometry Exam</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Completed: April 15, 2024</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm text-slate-500 dark:text-slate-400">Score</p>
+<p class="text-xl font-bold text-primary">92%</p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark/80 p-4 rounded-lg flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-background-dark transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center hidden sm:block" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAYDacQ8Jvw8NHlr-4EVOq7oEAsXSGSelRY5TftndhwgK7JihdfOT5nXwwxImoBTbZ-cS_LYYT4xB1ddapZrB2Peww2gobk3GrYGAtSEhD_PGC8X09V42P7TuEcf2uZeSEpnN28KtGYBbPxNd-wA7foicDUzRG9UCKTxna5n5ba87r175u1HRf3dv5S358iIhW00OmTTqUJVJnJMgOkizhB7fYwXdksgoNDpeNnmZn3XvI7UYNVv2ohEW390cnniLOslU-k7KsbOB8");'></div>
+<div>
+<p class="text-sm font-medium text-primary">Science</p>
+<p class="font-bold text-slate-800 dark:text-slate-100">Biology Exam</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Completed: April 22, 2024</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm text-slate-500 dark:text-slate-400">Score</p>
+<p class="text-xl font-bold text-primary">88%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

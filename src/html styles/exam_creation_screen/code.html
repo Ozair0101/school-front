@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13a4ec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101c22",
+              "surface-light": "#ffffff",
+              "surface-dark": "#1a2831",
+              "text-primary-light": "#0d171b",
+              "text-primary-dark": "#ffffff",
+              "text-secondary-light": "#4c809a",
+              "text-secondary-dark": "#a1b3be",
+            },
+            fontFamily: {
+              display: ["Plus Jakarta Sans", "Noto Sans", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-primary-light dark:text-text-primary-dark">
+<div class="flex min-h-screen w-full">
+<aside class="flex w-64 flex-col border-r border-r-primary/10 bg-surface-light dark:bg-surface-dark p-4">
+<div class="p-4 text-xl font-bold text-primary">Exam Platform</div>
+<nav class="flex flex-col gap-2 pt-4">
+<a class="flex items-center gap-3 rounded px-3 py-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-medium">Home</span>
+</a>
+<a class="flex items-center gap-3 rounded bg-primary/10 px-3 py-2 font-medium text-primary dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-medium">Exams</span>
+</a>
+<a class="flex items-center gap-3 rounded px-3 py-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-medium">Results</span>
+</a>
+<a class="flex items-center gap-3 rounded px-3 py-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium">Students</span>
+</a>
+<a class="flex items-center gap-3 rounded px-3 py-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-4">
+<button class="flex h-12 w-full items-center justify-center rounded-lg bg-primary font-bold text-white transition-colors hover:bg-primary/90">New Exam</button>
+<a class="flex items-center gap-3 rounded px-3 py-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-medium">Help and Docs</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto">
+<div class="p-8">
+<header class="mb-8">
+<h1 class="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">New Exam</h1>
+<p class="text-text-secondary-light dark:text-text-secondary-dark">Create a new exam for your students. Required fields are marked with *</p>
+</header>
+<div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
+<div class="space-y-6 lg:col-span-1">
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="exam-title">Exam Title <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="exam-title" placeholder="e.g. Midterm Physics" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="subject">Subject <span class="text-primary">*</span></label>
+<select class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="subject">
+<option>Select subject</option>
+<option>Physics</option>
+<option>Mathematics</option>
+<option>Computer Science</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="grade">Grade <span class="text-primary">*</span></label>
+<select class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="grade">
+<option>Select grade</option>
+<option>10th Grade</option>
+<option>11th Grade</option>
+<option>12th Grade</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="language">Language</label>
+<select class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="language">
+<option>English</option>
+<option>Dari</option>
+<option>Pashto</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="exam-description">Exam Description</label>
+<textarea class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="exam-description" placeholder="Provide a brief overview of the exam content and instructions." rows="4"></textarea>
+</div>
+</div>
+<div class="space-y-6 lg:col-span-1">
+<div class="rounded-lg bg-surface-light p-6 dark:bg-surface-dark">
+<h2 class="mb-4 text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Exam Settings</h2>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="duration">Duration (minutes) <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="duration" placeholder="e.g. 90" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="total-marks">Total Marks <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="total-marks" placeholder="e.g. 100" type="number"/>
+</div>
+<div class="space-y-2 sm:col-span-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="passing-marks">Passing Marks <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="passing-marks" placeholder="e.g. 40" type="number"/>
+</div>
+</div>
+</div>
+<div class="rounded-lg bg-surface-light p-6 dark:bg-surface-dark">
+<h2 class="mb-4 text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Exam Schedule</h2>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="start-date">Start Date <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="start-date" type="date"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="start-time">Start Time <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="start-time" type="time"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="end-date">End Date <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="end-date" type="date"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark" for="end-time">End Time <span class="text-primary">*</span></label>
+<input class="w-full rounded border-primary/20 bg-surface-light p-3 dark:border-primary/30 dark:bg-surface-dark focus:border-primary focus:ring-primary" id="end-time" type="time"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-end gap-4">
+<button class="flex h-12 items-center justify-center rounded-lg border border-primary/20 bg-surface-light px-6 font-bold text-text-primary-light transition-colors hover:bg-primary/10 dark:border-primary/30 dark:bg-surface-dark dark:text-text-primary-dark dark:hover:bg-primary/20">Save as Draft</button>
+<button class="flex h-12 items-center justify-center rounded-lg bg-primary px-6 font-bold text-white transition-colors hover:bg-primary/90">Create Exam</button>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

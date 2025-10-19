@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduQuest - Exam</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-radio:checked {
+            background-color: #13a4ec;
+            border-color: #13a4ec;
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+        }
+        .character-path::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-image: repeating-linear-gradient(90deg, #d1d5db 0, #d1d5db 10px, transparent 10px, transparent 20px);
+            z-index: -1;
+            margin-top: -2px;
+        }
+        .dark .character-path::before {
+             background-image: repeating-linear-gradient(90deg, #4b5563 0, #4b5563 10px, transparent 10px, transparent 20px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="min-h-screen flex flex-col">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-4">
+<svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path></svg>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">EduQuest</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-bold text-lg">14:32</span>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuChT-urGlS03g4EwdI2_E02BBFPm_1cnd2ecsyVKb90XFi-RuRsCFdZAdSVrIKnn1RpWKfKkS7GsOCj3s43o24ZL40DPDRMsjPLUQ32kv8Y6lJzIoedCVno-Re1Sw6dnwu3kJfZBLprqE0ccrIN1jhzGOamCncFSy-ax6JvebAp667_UCmrim2LxvA8ggXohr0_kl5wtbQMp0LR4_2U96lNItcFTasYNd9ul9-Lg_gs8eOgaRQvJvNS6xdQ7682L9qpE9Ozqa3gn3g");'></div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8">
+<div class="w-full max-w-2xl mx-auto">
+<div class="mb-12">
+<div class="flex justify-between items-center mb-4">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-400">Progress</p>
+<p class="text-sm font-bold text-gray-800 dark:text-gray-200">Question 1 of 4</p>
+</div>
+<div class="relative character-path h-16 flex items-center">
+<div class="absolute w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="bg-primary h-1" style="width: 12.5%;"></div>
+</div>
+<div class="absolute left-0 transition-all duration-500" style="transform: translateX(12.5%);">
+<div class="relative">
+<img alt="Friendly Character" class="h-16 w-16 p-1 bg-background-light dark:bg-background-dark rounded-full border-4 border-primary shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFy_WQo3hWu38sjPvqBBTPazfn500YAO6fr0rkZM5jBW_eu-hVXL92q5t4QkvCt4m5CUx6iD9pri-em1s9fwlRwGe7v4EsnpvHOqeYpMhM6K3sA_bWWllhMiJuTh-DbgTJuSZtUWJtdLW7nn4sIxdjfCXAGUMJ8JoRCHG256pBOF0WudwIdeDyRcBkaKuuZffdOd2uxSWIq4LJ-lgN_evmK8i5-RMxHYVxM7-2msZhyHZpIxnwqk8KHQIUjphMy6nWXcBkJ8ll0wI"/>
+<div class="absolute -top-1 -right-1 bg-yellow-400 text-white text-xs font-bold rounded-full size-6 flex items-center justify-center border-2 border-white dark:border-background-dark">
+<span>1</span>
+</div>
+</div>
+</div>
+<div class="absolute right-0 translate-x-1/2">
+<span class="material-symbols-outlined text-5xl text-yellow-500">
+flag
+</span>
+</div>
+</div>
+</div>
+<div class="bg-background-light dark:bg-background-dark/50 rounded-xl shadow-lg p-6 sm:p-8 border border-gray-200 dark:border-gray-800">
+<div class="flex items-start gap-4 mb-6">
+<h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex-grow">What is the capital of Afghanistan?</h2>
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+</div>
+<div class="space-y-4">
+<label class="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-primary/10 dark:has-[:checked]:bg-primary/20 cursor-pointer transition-all duration-200">
+<input checked="" class="custom-radio appearance-none size-6 rounded-full border-2 border-gray-300 dark:border-gray-600 checked:bg-primary checked:border-primary focus:ring-primary/50 focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark transition-all" name="capital" type="radio"/>
+<span class="text-base font-medium text-gray-800 dark:text-gray-200">Kabul</span>
+</label>
+<label class="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-primary/10 dark:has-[:checked]:bg-primary/20 cursor-pointer transition-all duration-200">
+<input class="custom-radio appearance-none size-6 rounded-full border-2 border-gray-300 dark:border-gray-600 checked:bg-primary checked:border-primary focus:ring-primary/50 focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark transition-all" name="capital" type="radio"/>
+<span class="text-base font-medium text-gray-800 dark:text-gray-200">Herat</span>
+</label>
+<label class="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-primary/10 dark:has-[:checked]:bg-primary/20 cursor-pointer transition-all duration-200">
+<input class="custom-radio appearance-none size-6 rounded-full border-2 border-gray-300 dark:border-gray-600 checked:bg-primary checked:border-primary focus:ring-primary/50 focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark transition-all" name="capital" type="radio"/>
+<span class="text-base font-medium text-gray-800 dark:text-gray-200">Mazar-i-Sharif</span>
+</label>
+<label class="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-primary/10 dark:has-[:checked]:bg-primary/20 cursor-pointer transition-all duration-200">
+<input class="custom-radio appearance-none size-6 rounded-full border-2 border-gray-300 dark:border-gray-600 checked:bg-primary checked:border-primary focus:ring-primary/50 focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark transition-all" name="capital" type="radio"/>
+<span class="text-base font-medium text-gray-800 dark:text-gray-200">Kandahar</span>
+</label>
+</div>
+<div class="mt-8 flex justify-end">
+<button class="flex items-center justify-center gap-2 h-12 px-8 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-all duration-300 transform hover:scale-105">
+<span>Check Answer</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

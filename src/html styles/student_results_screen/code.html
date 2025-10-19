@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Exam Complete</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f0f7ff",
+                        "background-dark": "#101c22",
+                        "text-light": "#0d171b",
+                        "text-dark": "#ffffff",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a2831",
+                        "success-light": "#078836",
+                        "success-dark": "#34d399",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;border-radius: 50%;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden">
+<div class="absolute inset-0 pointer-events-none" id="confetti-container"></div>
+<main class="w-full max-w-lg mx-auto text-center z-10">
+<div class="mb-6">
+<div class="w-48 h-48 mx-auto bg-center bg-no-repeat bg-cover rounded-full" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0glcgWsxhIlmkVr7duML6SGKfG_zUGFRAAZTyf6dU6qoLj6E4HvFlwV7XTIPUOaKBsHknozAUu4xXxJFJ3TzIWpzEFnS2mb07K3NMMAvSAv_NE24xy62Tqubw_X2Riul36j04NBbzjxCa6SdC3Bo4ybthoZf9OOQfQmq9Dpxto2J_5LPRNJkK3L5Ts3QiO_fbbm6XlHxCwaoFXM_Wnhvp0Av2bIvjSkeELVXS41So4nNgjCXLfUyJeFvjIiA4uxqg6CABze7WA7E");'></div>
+</div>
+<h1 class="text-4xl font-bold text-text-light dark:text-text-dark mb-2">Well done, Aisha!</h1>
+<p class="text-lg text-text-light/80 dark:text-text-dark/80 mb-8">You've successfully completed the Math exam. Let's see how you did.</p>
+<div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg p-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="flex flex-col items-center justify-center p-4 bg-background-light dark:bg-background-dark/20 rounded-lg">
+<span class="text-sm text-text-light/70 dark:text-text-dark/70 mb-1">Score</span>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold text-primary">18</span>
+<span class="text-2xl font-semibold text-text-light/50 dark:text-text-dark/50">/ 20</span>
+</div>
+<div class="flex items-center mt-2 text-success-light dark:text-success-dark">
+<span class="material-symbols-outlined text-base">trending_up</span>
+<span class="text-sm font-medium ml-1">+10%</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center p-4 bg-background-light dark:bg-background-dark/20 rounded-lg">
+<span class="text-sm text-text-light/70 dark:text-text-dark/70 mb-1">Improvement</span>
+<span class="text-4xl font-extrabold text-text-light dark:text-text-dark">+2</span>
+<span class="text-sm font-medium mt-2 text-text-light/50 dark:text-text-dark/50">points from last exam</span>
+</div>
+</div>
+</div>
+<div class="flex justify-center">
+<button class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/50 transition-all duration-300">
+                    View Detailed Results
+                </button>
+</div>
+</main>
+</div>
+<script>
+        // A simple confetti effect
+        const confettiContainer = document.getElementById('confetti-container');
+        const confettiColors = ['#13a4ec', '#facc15', '#4ade80', '#f87171', '#a78bfa'];
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.animationDuration = `${Math.random() * 2 + 3}s`;
+            confetti.style.animationDelay = `${Math.random() * 2}s`;
+            confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+            confetti.style.width = `${Math.random() * 8 + 6}px`;
+            confetti.style.height = confetti.style.width;
+            confetti.style.opacity = Math.random();
+            confettiContainer.appendChild(confetti);
+        }
+    </script>
+</body></html>
