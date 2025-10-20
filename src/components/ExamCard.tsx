@@ -1,5 +1,5 @@
 import React from 'react';
-import { Exam } from '../types';
+import type { Exam } from '../types';
 import Button from './Button';
 
 interface ExamCardProps {

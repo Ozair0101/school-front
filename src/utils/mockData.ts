@@ -1,4 +1,4 @@
-import { User, Exam, Question, Achievement } from '../types';
+import type { User, Exam, Question, Achievement } from '../types';
 
 export const mockUser: User = {
   id: '1',

@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { mockUser, mockExams, mockQuestions } from '../utils/mockData';
-import { Question } from '../types';
+import type { Question } from '../types';
 
 const ExamPage: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
