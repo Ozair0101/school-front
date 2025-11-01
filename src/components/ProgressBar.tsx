@@ -2,70 +2,34 @@ import React from 'react';
 
 interface ProgressBarProps {
   progress: number; // 0-100
-  label?: string;
-  showPercentage?: boolean;
+  className?: string;
   animated?: boolean;
-  color?: 'primary' | 'success' | 'warning' | 'error';
-  size?: 'sm' | 'md' | 'lg';
+  showPercentage?: boolean;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
-  progress,
-  label,
-  showPercentage = true,
+const ProgressBar: React.FC<ProgressBarProps> = ({ 
+  progress, 
+  className = '', 
   animated = false,
-  color = 'primary',
-  size = 'md'
+  showPercentage = false
 }) => {
-  const getColorClasses = () => {
-    switch (color) {
-      case 'success':
-        return 'bg-green-500';
-      case 'warning':
-        return 'bg-yellow-500';
-      case 'error':
-        return 'bg-red-500';
-      default:
-        return 'bg-primary';
-    }
-  };
-  
-  const getSizeClasses = () => {
-    switch (size) {
-      case 'sm':
-        return 'h-2';
-      case 'lg':
-        return 'h-4';
-      default:
-        return 'h-3';
-    }
-  };
-  
-  const progressClasses = `progress-bar ${getSizeClasses()} ${animated ? 'animate-pulse' : ''}`;
-  const fillClasses = `progress-fill ${getColorClasses()}`;
+  const clampedProgress = Math.min(100, Math.max(0, progress));
   
   return (
-    <div className="w-full">
-      {(label || showPercentage) && (
-        <div className="flex justify-between items-center mb-2">
-          {label && (
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {label}
-            </span>
-          )}
-          {showPercentage && (
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-              {Math.round(progress)}%
-            </span>
-          )}
+    <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 ${className}`}>
+      <div 
+        className={`bg-primary h-2.5 rounded-full relative ${animated ? 'transition-all duration-1000 ease-out' : ''}`}
+        style={{ width: `${clampedProgress}%` }}
+      >
+        {animated && (
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-progress-shine" />
+        )}
+      </div>
+      {showPercentage && (
+        <div className="text-right text-xs text-gray-500 dark:text-gray-400 mt-1">
+          {Math.round(clampedProgress)}%
         </div>
       )}
-      <div className={progressClasses}>
-        <div 
-          className={fillClasses}
-          style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-        />
-      </div>
     </div>
   );
 };
