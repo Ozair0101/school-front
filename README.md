@@ -1,152 +1,155 @@
-# 🌟 Monthly Exam Web App
+# Online Monthly Exam System - React Frontend
 
-A modern, responsive, and child-friendly web application for conducting monthly exams, built with React and styled using the Google Stitch design system.
+This is a React frontend implementation for an online monthly exam system that works with a Laravel backend. The system supports both student and teacher/admin flows with features like real-time monitoring, proctoring, offline support, and accessibility.
 
-## 🎯 Features
+## Features Implemented
 
-### For Students (Ages 6-12)
-- **Child-Friendly Interface**: Fun, colorful design with rounded shapes and bright colors
-- **Interactive Dashboard**: View upcoming exams, track progress, and celebrate achievements
-- **Engaging Exam Experience**: Colorful question cards with progress tracking and friendly mascot
-- **Animated Results**: Celebration effects with confetti, stars, and encouraging messages
-- **Achievement System**: Unlock badges and track learning progress
+### Student Flow
+- Exam list with filtering and search
+- Exam detail view with access code support
+- Exam canvas with:
+  - Question navigation
+  - Timer with warnings
+  - Progress tracking
+  - Autosave functionality
+  - Offline support
+  - Proctoring capture
+  - Review modal
+  - Question types: MCQ, True/False, Numeric, Short Answer, Essay, File Upload
 
-### For Teachers/Admins
-- **Professional Dashboard**: Clean, minimal design for administrative tasks
-- **Class Management**: Organize students by classes and track performance
-- **Performance Analytics**: Visual charts and progress tracking
-- **Exam Scheduling**: Easy exam creation and management tools
+### Teacher/Admin Flow
+- Real-time monitoring dashboard
+- Grading queue for manual grading
+- Proctoring events viewer
 
-## 🚀 Tech Stack
+### Technical Features
+- TypeScript for type safety
+- React Query for server state management
+- Axios for HTTP requests with interceptors
+- WebSocket/Socket.IO for real-time updates
+- LocalForage for offline storage
+- Tailwind CSS for styling
+- Responsive design
+- Accessibility support
+- Security features (attempt tokens)
 
-- **Frontend**: React 19 with TypeScript
-- **Styling**: Tailwind CSS with Google Stitch design system
-- **Routing**: React Router DOM
-- **Animations**: Framer Motion and CSS animations
-- **Icons**: Material Symbols and custom emojis
-- **Build Tool**: Vite
+## Folder Structure
 
-## 🎨 Design Principles
-
-- **Child-Centric**: Large, readable text with playful fonts and friendly colors
-- **Accessibility**: High contrast, clear navigation, and keyboard-friendly interactions
-- **Mobile-First**: Responsive design that works on tablets and computers
-- **Delightful**: Smooth animations and micro-interactions that make learning fun
-- **Consistent**: Unified design language following Google Stitch guidelines
-
-## 📱 Pages
-
-1. **Login/Signup Page**: Simple and friendly with mascot and demo access
-2. **Student Dashboard**: Overview of exams, scores, and achievements
-3. **Exam Page**: Interactive question cards with progress tracking
-4. **Results Page**: Animated celebration with detailed performance feedback
-5. **Admin Dashboard**: Professional interface for teachers and administrators
-
-## 🛠️ Getting Started
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd school-front
+```
+src/
+├── components/
+│   ├── QuestionCard/
+│   │   ├── index.tsx
+│   │   ├── MCQQuestionCard.tsx
+│   │   ├── TFQuestionCard.tsx
+│   │   ├── NumericQuestionCard.tsx
+│   │   ├── ShortQuestionCard.tsx
+│   │   ├── EssayQuestionCard.tsx
+│   │   └── FileQuestionCard.tsx
+│   ├── Timer.tsx
+│   ├── ProgressBar.tsx
+│   ├── ProctoringCapture.tsx
+│   └── ...
+├── hooks/
+│   ├── useExamAutosave.ts
+│   └── useServerTimeSync.ts
+├── pages/
+│   ├── ExamsList.tsx
+│   ├── ExamDetail.tsx
+│   ├── ExamCanvas.tsx
+│   ├── Teacher/
+│   │   ├── Monitoring.tsx
+│   │   └── GradingQueue.tsx
+│   └── ...
+├── services/
+│   └── api.ts
+├── tests/
+│   ├── Timer.test.tsx
+│   └── useExamAutosave.test.ts
+└── types/
+    └── index.ts
 ```
 
-2. Install dependencies:
+## Key Components
+
+### API Service (`services/api.ts`)
+- Axios instance with interceptors for authentication and attempt tokens
+- Methods for all backend endpoints
+- Type definitions for data models
+
+### Custom Hooks
+- `useExamAutosave`: Handles autosave with debounce, offline queue, and retries
+- `useServerTimeSync`: Synchronizes client time with server
+
+### Question Components (`components/QuestionCard/`)
+- Support for all question types (MCQ, TF, Numeric, Short, Essay, File)
+- Review mode with explanations
+- Keyboard navigation support
+
+### Core Pages
+- `ExamsList`: Lists available exams with filtering
+- `ExamDetail`: Shows exam information and start button
+- `ExamCanvas`: Main exam interface with timer, progress, and questions
+- `Teacher/Monitoring`: Real-time monitoring of in-progress attempts
+- `Teacher/GradingQueue`: Manual grading interface
+
+## Installation
+
 ```bash
 npm install
 ```
 
-3. Start the development server:
+## Development
+
 ```bash
 npm run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+## Build
 
-## 🎮 Demo Access
-
-The app includes demo buttons for quick access:
-- **Student Demo**: Experience the child-friendly interface
-- **Teacher Demo**: Access the admin dashboard
-
-## 🎨 Design System
-
-The app follows the Google Stitch design system with:
-- **Primary Color**: #13a4ec (bright blue)
-- **Background**: Light and dark mode support
-- **Typography**: Plus Jakarta Sans font family
-- **Border Radius**: Rounded corners (0.5rem to 1.5rem)
-- **Animations**: Gentle bounces, floats, and smooth transitions
-
-## 📦 Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-│   ├── Button.tsx
-│   ├── Card.tsx
-│   ├── ExamCard.tsx
-│   ├── ScoreBadge.tsx
-│   ├── ProgressBar.tsx
-│   ├── Header.tsx
-│   └── ConfettiEffect.tsx
-├── pages/              # Main application pages
-│   ├── LoginPage.tsx
-│   ├── StudentDashboard.tsx
-│   ├── ExamPage.tsx
-│   ├── ResultsPage.tsx
-│   └── AdminDashboard.tsx
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions and mock data
-└── styles/             # CSS and styling files
+```bash
+npm run build
 ```
 
-## 🌈 Key Features
+## Testing
 
-### Child-Friendly Elements
-- Friendly mascot character throughout the app
-- Emoji usage for visual appeal and familiarity
-- Large, readable text and buttons
-- Bright, high-contrast colors
-- Smooth animations and delightful interactions
+```bash
+npm run test
+```
 
-### Accessibility Features
+## API Integration
+
+The frontend integrates with the Laravel backend through the following key endpoints:
+
+- `POST /api/exams/{id}/start` - Start exam attempt
+- `POST /api/attempts/{id}/answer` - Save answer
+- `POST /api/attempts/{id}/submit` - Submit exam
+- `GET /api/attempts/{id}/status` - Get attempt status
+- `POST /api/exams/{id}/presign` - Get presigned URL for file uploads
+- WebSocket channel `exam.{exam_id}.monitor` - Real-time events
+
+## Security
+
+- All calls that modify attempt state include attempt_token
+- Tokens are stored in memory with localStorage fallback
+- HTTPS is used for all communications
+
+## Offline Support
+
+- Answers are autosaved every 10 seconds (configurable)
+- Offline answers are queued in localStorage
+- Sync happens when connection returns
+
+## Proctoring
+
+- Visibility/tab events are captured and logged
+- Webcam snapshots (optional) with user consent
+- Events sent via API or WebSocket in batches
+
+## Accessibility
+
 - Keyboard navigation support
-- High contrast text and backgrounds
-- Clear focus indicators
-- Screen reader friendly
-- Mobile-first responsive design
-
-### Educational Features
-- Progress tracking with visual indicators
-- Achievement system with badges
-- Performance analytics and feedback
-- Encouraging messages and celebrations
-- Time management tools
-
-## 🚀 Future Enhancements
-
-- Real backend integration
-- User authentication system
-- Advanced analytics and reporting
-- Multi-language support
-- Offline exam capability
-- Parent dashboard
-- Advanced question types (multiple choice, drag-and-drop, etc.)
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-Built with ❤️ for children's education and learning experience.
+- ARIA attributes
+- Focus management
+- Proper contrast ratios
+- Clear error messages
