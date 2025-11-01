@@ -111,7 +111,7 @@ const ExamPage: React.FC = () => {
 
             <Button
               onClick={handleStartExam}
-              className="w-full"
+              className="w-full text-black"
               icon={<span>🚀</span>}
             >
               Start Exam
@@ -223,7 +223,7 @@ const ExamPage: React.FC = () => {
                 <Button
                   onClick={handleSubmitExam}
                   disabled={selectedAnswers[currentQuestionIndex] === -1}
-                  icon={<span>Submit</span>}
+                  className='text-black'
                 >
                   Submit Exam
                 </Button>
@@ -231,6 +231,7 @@ const ExamPage: React.FC = () => {
                 <Button
                   onClick={handleNextQuestion}
                   disabled={selectedAnswers[currentQuestionIndex] === -1}
+                  className='text-black'
                   icon={<span>→</span>}
                 >
                   Next
