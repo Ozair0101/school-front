@@ -24,12 +24,19 @@ export interface Grade {
   school_id: number;
   name: string;
   level: number;
+  school?: School;
+  sections?: Section[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Section {
   id: number;
   grade_id: number;
   name: string;
+  grade?: Grade;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface MonthlyExam {
@@ -337,11 +344,6 @@ class ApiService {
     return data;
   }
 
-  // Get exam questions
-  async getExamQuestions(examId: string): Promise<ExamQuestion[]> {
-    const response = await this.axiosInstance.get(`/monthly-exams/${examId}/questions`);
-    return response.data.data;
-  }
 
   // Save answer
   async saveAnswer(attemptId: string, answer: Omit<AttemptAnswer, 'id'>): Promise<AttemptAnswer> {
@@ -409,6 +411,32 @@ class ApiService {
     return response.data.data || [];
   }
 
+  // School CRUD operations
+  async getSchool(id: number): Promise<School> {
+    const response = await this.axiosInstance.get(`/schools/${id}`);
+    return response.data.data;
+  }
+
+  async createSchool(schoolData: {
+    name: string;
+    address?: string;
+  }): Promise<School> {
+    const response = await this.axiosInstance.post('/schools', schoolData);
+    return response.data.data;
+  }
+
+  async updateSchool(id: number, schoolData: {
+    name?: string;
+    address?: string;
+  }): Promise<School> {
+    const response = await this.axiosInstance.put(`/schools/${id}`, schoolData);
+    return response.data.data;
+  }
+
+  async deleteSchool(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/schools/${id}`);
+  }
+
   async getGrades(schoolId?: number): Promise<Grade[]> {
     const url = schoolId ? `/grades?school_id=${schoolId}` : '/grades';
     const response = await this.axiosInstance.get(url);
@@ -419,6 +447,60 @@ class ApiService {
     const url = gradeId ? `/sections?grade_id=${gradeId}` : '/sections';
     const response = await this.axiosInstance.get(url);
     return response.data.data || [];
+  }
+
+  // Grade CRUD operations
+  async getGrade(id: number): Promise<Grade> {
+    const response = await this.axiosInstance.get(`/grades/${id}`);
+    return response.data.data;
+  }
+
+  async createGrade(gradeData: {
+    school_id: number;
+    name: string;
+    level: number;
+  }): Promise<Grade> {
+    const response = await this.axiosInstance.post('/grades', gradeData);
+    return response.data.data;
+  }
+
+  async updateGrade(id: number, gradeData: {
+    school_id?: number;
+    name?: string;
+    level?: number;
+  }): Promise<Grade> {
+    const response = await this.axiosInstance.put(`/grades/${id}`, gradeData);
+    return response.data.data;
+  }
+
+  async deleteGrade(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/grades/${id}`);
+  }
+
+  // Section CRUD operations
+  async getSection(id: number): Promise<Section> {
+    const response = await this.axiosInstance.get(`/sections/${id}`);
+    return response.data.data;
+  }
+
+  async createSection(sectionData: {
+    grade_id: number;
+    name: string;
+  }): Promise<Section> {
+    const response = await this.axiosInstance.post('/sections', sectionData);
+    return response.data.data;
+  }
+
+  async updateSection(id: number, sectionData: {
+    grade_id?: number;
+    name?: string;
+  }): Promise<Section> {
+    const response = await this.axiosInstance.put(`/sections/${id}`, sectionData);
+    return response.data.data;
+  }
+
+  async deleteSection(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/sections/${id}`);
   }
 
   // Question Bank endpoints
