@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
-import type { Exam } from '../services/api';
-import Header from '../components/Header';
+import type { MonthlyExam } from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
@@ -13,8 +12,16 @@ const ExamsList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'upcoming' | 'in-progress' | 'completed'>('all');
 
+  const getMonthName = (month: number) => {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months[month - 1] || '';
+  };
+
   // Fetch exams using React Query
-  const { data: exams = [], isLoading, error } = useQuery<Exam[]>(
+  const { data: exams = [], isLoading, error } = useQuery<MonthlyExam[]>(
     'exams',
     () => apiService.getExams(),
     {
@@ -25,20 +32,40 @@ const ExamsList: React.FC = () => {
 
   // Filter exams based on search term and status using useMemo
   const filteredExams = useMemo(() => {
+    if (!exams || exams.length === 0) return [];
+    
     let result = [...exams];
     
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(exam => 
-        exam.title.toLowerCase().includes(term) || 
-        exam.subject.toLowerCase().includes(term)
-      );
+      result = result.filter(exam => {
+        const examTitle = `${getMonthName(exam.month)} ${exam.year} Exam`;
+        const description = exam.description?.toLowerCase() || '';
+        const gradeName = exam.grade?.name?.toLowerCase() || '';
+        const sectionName = exam.section?.name?.toLowerCase() || '';
+        
+        return examTitle.toLowerCase().includes(term) ||
+               description.includes(term) ||
+               gradeName.includes(term) ||
+               sectionName.includes(term);
+      });
     }
     
-    // Apply status filter
+    // Apply status filter based on exam date
     if (filterStatus !== 'all') {
-      result = result.filter(exam => exam.status === filterStatus);
+      const now = new Date();
+      result = result.filter(exam => {
+        const examDate = new Date(exam.exam_date);
+        if (filterStatus === 'upcoming') {
+          return examDate > now;
+        } else if (filterStatus === 'completed') {
+          return examDate < now;
+        } else if (filterStatus === 'in-progress') {
+          return exam.online_enabled && examDate <= now;
+        }
+        return true;
+      });
     }
     
     return result;
@@ -54,54 +81,62 @@ const ExamsList: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (error) {
+    const errorMessage = (error as any)?.userMessage || 
+                         ((error as any)?.code === 'ECONNABORTED' || (error as any)?.message?.includes('timeout'))
+                           ? 'The request timed out. The server may be slow or unresponsive.'
+                           : ((error as any)?.code === 'ERR_NETWORK' || !(error as any)?.response)
+                             ? 'Cannot connect to server. Please ensure the backend is running on http://localhost:8000'
+                             : 'There was a problem loading your exams.';
+
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <Card className="text-center p-8">
               <div className="text-red-500 text-5xl mb-4">⚠️</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Error Loading Exams</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                There was a problem loading your exams. This might be because:
+                {errorMessage}
               </p>
               <ul className="text-left text-gray-600 dark:text-gray-400 mb-6 space-y-2 max-w-md mx-auto">
-                <li>• MySQL database is not running</li>
-                <li>• The 'school' database doesn't exist</li>
-                <li>• Database migrations haven't been run</li>
+                <li>• Check if Laravel backend is running: <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">php artisan serve</code></li>
+                <li>• Verify database connection is working</li>
+                <li>• Check if the API endpoint is accessible: <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">http://localhost:8000/api/monthly-exams</code></li>
+                {(error as any)?.code === 'ECONNABORTED' && (
+                  <li>• The request timed out - this may indicate the server is overloaded or database queries are slow</li>
+                )}
               </ul>
-              <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
-                Please check your backend setup and try again.
-              </p>
-              <Button onClick={() => window.location.reload()}>
-                Retry
-              </Button>
+              <div className="flex gap-3 justify-center">
+                <Button onClick={() => window.location.reload()}>
+                  Retry
+                </Button>
+                <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+                  Back to Dashboard
+                </Button>
+              </div>
             </Card>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      <Header />
-      
-      <main className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           {/* Page header */}
           <div className="mb-8">
@@ -155,110 +190,108 @@ const ExamsList: React.FC = () => {
             </Card>
           ) : (
             <div className="space-y-6">
-              {filteredExams.map((exam) => (
-                <Card key={exam.id} className="overflow-hidden">
-                  <div className="p-6">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      {exam.image && (
-                        <div className="flex-shrink-0">
-                          <img 
-                            src={exam.image} 
-                            alt={exam.title}
-                            className="w-24 h-24 rounded-lg object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                          <div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                              {exam.title}
-                            </h2>
-                            <p className="text-primary font-medium">{exam.subject}</p>
-                          </div>
-                          <div className="flex gap-2">
-                            {exam.status === 'upcoming' && (
-                              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
-                                Upcoming
-                              </span>
-                            )}
-                            {exam.status === 'in-progress' && (
-                              <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-medium">
-                                In Progress
-                              </span>
-                            )}
-                            {exam.status === 'completed' && (
-                              <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
-                                Completed
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <p className="text-gray-600 dark:text-gray-400 mb-4">
-                          {exam.description}
-                        </p>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Duration</p>
-                            <p className="font-medium">{exam.duration} minutes</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Questions</p>
-                            <p className="font-medium">{exam.totalQuestions}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Due Date</p>
-                            <p className="font-medium">
-                              {new Date(exam.dueDate).toLocaleDateString()}
-                            </p>
-                          </div>
-                          {exam.status === 'completed' && exam.score !== undefined && (
+              {filteredExams.map((exam) => {
+                const examTitle = `${getMonthName(exam.month)} ${exam.year} Exam`;
+                const examDate = new Date(exam.exam_date);
+                const now = new Date();
+                const isUpcoming = examDate > now;
+                const isCompleted = examDate < now;
+                const isInProgress = exam.online_enabled && examDate <= now && !isCompleted;
+                const status = isUpcoming ? 'upcoming' : isInProgress ? 'in-progress' : 'completed';
+                
+                return (
+                  <Card key={exam.id} className="overflow-hidden">
+                    <div className="p-6">
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1">
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                             <div>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">Score</p>
-                              <p className="font-medium">
-                                {exam.score}/{exam.maxScore} ({Math.round((exam.score / exam.maxScore) * 100)}%)
+                              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {examTitle}
+                              </h2>
+                              <p className="text-primary font-medium">
+                                {exam.grade?.name} - {exam.section?.name}
                               </p>
                             </div>
-                          )}
-                        </div>
-                        
-                        {exam.status === 'completed' && exam.score !== undefined && (
-                          <div className="mb-4">
-                            <ProgressBar 
-                              progress={(exam.score / exam.maxScore) * 100} 
-                              showPercentage 
-                            />
+                            <div className="flex gap-2">
+                              {status === 'upcoming' && (
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
+                                  Upcoming
+                                </span>
+                              )}
+                              {status === 'in-progress' && (
+                                <span className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-medium">
+                                  In Progress
+                                </span>
+                              )}
+                              {status === 'completed' && (
+                                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
+                                  Completed
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        )}
-                        
-                        <div className="flex flex-wrap gap-3">
-                          {exam.status === 'upcoming' && (
-                            <Button onClick={() => handleStartExam(exam.id)}>
-                              Start Exam
-                            </Button>
+                          
+                          {exam.description && (
+                            <p className="text-gray-600 dark:text-gray-400 mb-4">
+                              {exam.description}
+                            </p>
                           )}
-                          {exam.status === 'in-progress' && (
-                            <Button onClick={() => handleStartExam(exam.id)}>
-                              Continue Exam
-                            </Button>
-                          )}
-                          {exam.status === 'completed' && (
-                            <Button variant="secondary" onClick={() => handleViewResults(exam.id)}>
-                              View Results
-                            </Button>
-                          )}
+                          
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <div>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">Duration</p>
+                              <p className="font-medium">{exam.duration_minutes || 'N/A'} minutes</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">Exam Date</p>
+                              <p className="font-medium">
+                                {examDate.toLocaleDateString()}
+                              </p>
+                            </div>
+                            {exam.start_time && exam.end_time && (
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Time</p>
+                                <p className="font-medium">
+                                  {exam.start_time} - {exam.end_time}
+                                </p>
+                              </div>
+                            )}
+                            {exam.passing_percentage && (
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Passing %</p>
+                                <p className="font-medium">{exam.passing_percentage}%</p>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-3">
+                            {status === 'upcoming' && exam.online_enabled && (
+                              <Button onClick={() => handleStartExam(exam.id.toString())}>
+                                Start Exam
+                              </Button>
+                            )}
+                            {status === 'in-progress' && (
+                              <Button onClick={() => handleStartExam(exam.id.toString())}>
+                                Continue Exam
+                              </Button>
+                            )}
+                            {status === 'completed' && (
+                              <Button variant="secondary" onClick={() => handleViewResults(exam.id.toString())}>
+                                View Results
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };
