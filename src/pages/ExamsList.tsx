@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
@@ -10,7 +10,6 @@ import ProgressBar from '../components/ProgressBar';
 
 const ExamsList: React.FC = () => {
   const navigate = useNavigate();
-  const [filteredExams, setFilteredExams] = useState<Exam[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'upcoming' | 'in-progress' | 'completed'>('all');
 
@@ -24,8 +23,8 @@ const ExamsList: React.FC = () => {
     }
   );
 
-  // Filter exams based on search term and status
-  useEffect(() => {
+  // Filter exams based on search term and status using useMemo
+  const filteredExams = useMemo(() => {
     let result = [...exams];
     
     // Apply search filter
@@ -42,7 +41,7 @@ const ExamsList: React.FC = () => {
       result = result.filter(exam => exam.status === filterStatus);
     }
     
-    setFilteredExams(result);
+    return result;
   }, [exams, searchTerm, filterStatus]);
 
   const handleStartExam = (examId: string) => {
