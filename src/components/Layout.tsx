@@ -23,16 +23,44 @@ const Layout: React.FC<LayoutProps> = ({ showNavbar = true, user }) => {
       const token = localStorage.getItem('auth_token');
       if (!token) return null;
       
-      // In a real app, you'd fetch the user from the API
-      // For now, return a mock user
-      return user || {
-        id: '1',
-        name: 'User',
-        email: 'user@example.com',
-        role: 'student',
-      };
+      // Try to get user from localStorage first
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          
+          // Optionally verify with backend (uncomment if you have /user endpoint)
+          // try {
+          //   const verifiedUser = await apiService.getCurrentUser();
+          //   localStorage.setItem('user', JSON.stringify(verifiedUser));
+          //   return verifiedUser;
+          // } catch (error) {
+          //   // If verification fails, return stored user
+          //   return parsedUser;
+          // }
+          
+          return parsedUser;
+        } catch (e) {
+          console.error('Error parsing user from localStorage:', e);
+          return null;
+        }
+      }
+      
+      // Try to fetch from API if available
+      try {
+        const apiUser = await apiService.getCurrentUser();
+        localStorage.setItem('user', JSON.stringify(apiUser));
+        return apiUser;
+      } catch (error) {
+        console.error('Failed to fetch user from API:', error);
+        return null;
+      }
     },
-    { enabled: !user, staleTime: 5 * 60 * 1000 }
+    { 
+      enabled: !user, 
+      staleTime: 5 * 60 * 1000,
+      retry: false,
+    }
   );
 
   const displayUser = user || currentUser;
@@ -44,9 +72,16 @@ const Layout: React.FC<LayoutProps> = ({ showNavbar = true, user }) => {
     return <Outlet />;
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await apiService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+      navigate('/login');
+    }
   };
 
   const isActive = (path: string) => {
