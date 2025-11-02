@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
 import type { Grade, School } from '../services/api';
 import Card from '../components/Card';
@@ -10,6 +11,7 @@ import { useFormSubmission } from '../hooks/useFormSubmission';
 
 const GradesManagement: React.FC = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [showFormModal, setShowFormModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -284,6 +286,16 @@ const GradesManagement: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => navigate(`/admin/grades/${grade.id}/students`)}
+                              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                              aria-label="View students"
+                              title="View Students"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                              </svg>
+                            </button>
                             <button
                               onClick={() => handleEdit(grade)}
                               className="text-primary hover:text-primary/80 transition-colors"
