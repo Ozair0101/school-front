@@ -11,6 +11,9 @@ import ExamDetail from './pages/ExamDetail';
 import ExamCanvas from './pages/ExamCanvas';
 import ExamManagement from './pages/ExamManagement';
 import ExamQuestions from './pages/ExamQuestions';
+import GradesManagement from './pages/GradesManagement';
+import SectionsManagement from './pages/SectionsManagement';
+import SchoolsManagement from './pages/SchoolsManagement';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -62,6 +65,18 @@ const router = createBrowserRouter([
       {
         path: '/admin/exams/:examId/questions',
         element: <ExamQuestions />,
+      },
+      {
+        path: '/admin/grades',
+        element: <GradesManagement />,
+      },
+      {
+        path: '/admin/sections',
+        element: <SectionsManagement />,
+      },
+      {
+        path: '/admin/schools',
+        element: <SchoolsManagement />,
       },
       {
         path: '/teacher/monitoring',
