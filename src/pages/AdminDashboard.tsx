@@ -24,52 +24,11 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleScheduleExam = () => {
-    alert('Schedule Exam functionality would be implemented here');
+    navigate('/admin/exams');
   };
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      {/* Header */}
-      <header className="flex shrink-0 items-center justify-between whitespace-nowrap border-b border-subtle-light dark:border-subtle-dark px-10 py-3">
-        <div className="flex items-center gap-4">
-          <div className="text-primary size-6">
-            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
-            </svg>
-          </div>
-          <h2 className="text-lg font-bold tracking-tight">EduAssess</h2>
-        </div>
-        
-        <nav className="hidden items-center gap-8 md:flex">
-          <Link 
-            to="/admin" 
-            className={`text-sm font-medium hover:text-primary ${location.pathname === '/admin' ? 'text-primary' : 'text-muted-light dark:text-muted-dark'}`}
-          >
-            Dashboard
-          </Link>
-          <Link 
-            to="/exams" 
-            className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary"
-          >
-            Exams
-          </Link>
-          <button className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary">
-            Students
-          </button>
-          <button className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary">
-            Reports
-          </button>
-        </nav>
-        
-        <div className="flex items-center gap-4">
-          <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-subtle-light dark:bg-subtle-dark text-muted-light dark:text-muted-dark hover:bg-primary/20 dark:hover:bg-primary/30 hover:text-primary">
-            <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-              <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
-            </svg>
-          </button>
-          <div className="size-10 rounded-full bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpyaIw6Q6AexkQI-WH-8v1m4hBaUQaUOd3KOnou_q9UeKePQVtVJ1SNNjczC5nQrIpM4MPUUe4OaH-0XHjrpHpzXj3ga2RycU-PWTODmQ2mGwJwlgaCD4nX7cZtQeIlC3x9Q4g1hfhWZd_OEiSQx0P39c4-OhTSagXMoeQ-x2j0tdR5v1r7XK3wzQYgtZmZa43GNLMon6Lf4m5L1Tf_Aya2guUh93QXhusaPLugLlPyn-ho0jFvhsnajXFYfH5bVlETyCWqDQXKno")'}}></div>
-        </div>
-      </header>
 
       <div className="flex flex-1">
         {/* Sidebar */}
