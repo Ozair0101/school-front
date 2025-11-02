@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import apiService from '../services/api';
 import type { Exam } from '../services/api';
-import Header from '../components/Header';
 import Card from '../components/Card';
 import Button from '../components/Button';
 
@@ -47,20 +46,18 @@ const ExamDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="flex items-center justify-center p-4">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (isError || !exam) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
             <Card className="text-center p-8">
               <div className="text-red-500 text-5xl mb-4">⚠️</div>
@@ -73,16 +70,14 @@ const ExamDetail: React.FC = () => {
               </Button>
             </Card>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      <Header />
-      
-      <main className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <Card className="overflow-hidden">
             {exam.image && (
@@ -223,7 +218,7 @@ const ExamDetail: React.FC = () => {
             </div>
           </Card>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
