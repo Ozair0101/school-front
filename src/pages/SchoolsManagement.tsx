@@ -5,6 +5,8 @@ import type { School } from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
+import { useFormSubmission } from '../hooks/useFormSubmission';
 
 const SchoolsManagement: React.FC = () => {
   const queryClient = useQueryClient();
@@ -13,6 +15,20 @@ const SchoolsManagement: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Form submission hook
+  const formSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries('schools');
+      setShowFormModal(false);
+      setSelectedSchool(null);
+    },
+    successMessage: selectedSchool ? 'School updated successfully!' : 'School created successfully!',
+    clearForm: () => {
+      const form = document.getElementById('school-form') as HTMLFormElement;
+      if (form) form.reset();
+    },
+  });
 
   // Fetch schools
   const { data: schools = [], isLoading, error } = useQuery<School[]>(
@@ -31,42 +47,28 @@ const SchoolsManagement: React.FC = () => {
 
   // Create/Update mutation
   const saveMutation = useMutation(
-    (data: { name: string; address?: string }) => {
+    async (data: { name: string; address?: string }) => {
       if (selectedSchool) {
-        return apiService.updateSchool(selectedSchool.id, data);
+        return await apiService.updateSchool(selectedSchool.id, data);
       } else {
-        return apiService.createSchool(data);
+        return await apiService.createSchool(data);
       }
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('schools');
-        setShowFormModal(false);
-        setSelectedSchool(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to save school:', error);
-        const errorMessage = error.response?.data?.message || 
-                            error.response?.data?.errors || 
-                            'Failed to save school';
-        alert(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
-      },
     }
   );
 
-  // Delete mutation
+  // Delete mutation with toast
+  const deleteSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries('schools');
+      setShowDeleteModal(false);
+      setSelectedSchool(null);
+    },
+    successMessage: 'School deleted successfully!',
+  });
+
   const deleteMutation = useMutation(
-    (id: number) => apiService.deleteSchool(id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('schools');
-        setShowDeleteModal(false);
-        setSelectedSchool(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to delete school:', error);
-        alert(error.response?.data?.message || 'Failed to delete school');
-      },
+    async (id: number) => {
+      return await apiService.deleteSchool(id);
     }
   );
 
@@ -87,22 +89,30 @@ const SchoolsManagement: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedSchool) {
-      deleteMutation.mutate(selectedSchool.id);
+      deleteSubmission.handleSubmit(
+        () => deleteMutation.mutateAsync(selectedSchool.id),
+        'School deleted successfully!',
+        'Failed to delete school'
+      );
     }
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string;
     const address = formData.get('address') as string;
 
     if (!name) {
-      alert('Please fill in the school name');
+      formSubmission.showToast('Please fill in the school name', 'error');
       return;
     }
 
-    saveMutation.mutate({ name, address: address || undefined });
+    await formSubmission.handleSubmit(
+      () => saveMutation.mutateAsync({ name, address: address || undefined }),
+      selectedSchool ? 'School updated successfully!' : 'School created successfully!',
+      selectedSchool ? 'Failed to update school' : 'Failed to create school'
+    );
   };
 
   if (isLoading) {
@@ -321,14 +331,14 @@ const SchoolsManagement: React.FC = () => {
               Cancel
             </Button>
             <Button
-              onClick={(e) => {
+              onClick={() => {
                 const form = document.getElementById('school-form') as HTMLFormElement;
                 if (form) {
                   form.requestSubmit();
                 }
               }}
-              disabled={saveMutation.isLoading}
-              loading={saveMutation.isLoading}
+              disabled={formSubmission.isLoading || saveMutation.isLoading}
+              loading={formSubmission.isLoading || saveMutation.isLoading}
             >
               {selectedSchool ? 'Update' : 'Create'}
             </Button>
@@ -383,16 +393,16 @@ const SchoolsManagement: React.FC = () => {
                 setShowDeleteModal(false);
                 setSelectedSchool(null);
               }}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
             >
               Cancel
             </Button>
             <button
               onClick={handleConfirmDelete}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {deleteMutation.isLoading && (
+              {(deleteSubmission.isLoading || deleteMutation.isLoading) && (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               )}
               Delete
@@ -422,6 +432,20 @@ const SchoolsManagement: React.FC = () => {
           </p>
         </div>
       </Modal>
+
+      {/* Toast Notification */}
+      <Toast
+        message={formSubmission.toast.message}
+        type={formSubmission.toast.type}
+        isVisible={formSubmission.toast.isVisible}
+        onClose={formSubmission.hideToast}
+      />
+      <Toast
+        message={deleteSubmission.toast.message}
+        type={deleteSubmission.toast.type}
+        isVisible={deleteSubmission.toast.isVisible}
+        onClose={deleteSubmission.hideToast}
+      />
     </div>
   );
 };
