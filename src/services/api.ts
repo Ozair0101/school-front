@@ -12,6 +12,57 @@ export interface User {
   grade?: string;
 }
 
+// Backend model interfaces
+export interface School {
+  id: number;
+  name: string;
+  address?: string;
+}
+
+export interface Grade {
+  id: number;
+  school_id: number;
+  name: string;
+  level: number;
+}
+
+export interface Section {
+  id: number;
+  grade_id: number;
+  name: string;
+}
+
+export interface MonthlyExam {
+  id: number;
+  school_id: number;
+  grade_id: number;
+  section_id: number;
+  month: number;
+  year: number;
+  exam_date: string;
+  description?: string;
+  online_enabled: boolean;
+  start_time?: string;
+  end_time?: string;
+  duration_minutes?: number;
+  allow_multiple_attempts?: boolean;
+  max_attempts?: number;
+  shuffle_questions?: boolean;
+  shuffle_choices?: boolean;
+  negative_marking?: number;
+  passing_percentage?: number;
+  access_code?: string;
+  random_pool?: boolean;
+  show_answers_after?: boolean;
+  auto_publish_results?: boolean;
+  school?: School;
+  grade?: Grade;
+  section?: Section;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Frontend-friendly Exam interface (for backwards compatibility)
 export interface Exam {
   id: string;
   title: string;
@@ -84,14 +135,38 @@ export interface ProctoringEvent {
   details?: any;
 }
 
+export interface QuestionBank {
+  id: number;
+  school_id: number;
+  name: string;
+  created_by: number;
+  school?: School;
+}
+
 export interface ExamQuestion {
-  id: string;
-  monthly_exam_id: string;
-  question_id: string;
-  marks: number;
-  sequence: number;
+  id: number;
+  monthly_exam_id: number;
+  question_id: number;
+  marks?: number;
+  sequence?: number;
   pool_tag?: string;
-  question: Question;
+  question?: Question;
+  monthly_exam?: MonthlyExam;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface BackendQuestion {
+  id: number;
+  bank_id: number;
+  author_id: number;
+  type: 'mcq' | 'tf' | 'numeric' | 'short' | 'essay' | 'file';
+  prompt: string;
+  default_marks: number;
+  metadata?: any;
+  bank?: QuestionBank;
+  author?: any;
+  choices?: Choice[];
 }
 
 class ApiService {
@@ -101,7 +176,7 @@ class ApiService {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: 'http://localhost:8000/api', // Laravel backend URL
-      timeout: 10000,
+      timeout: 30000, // Increased to 30 seconds for better reliability
       headers: {
         'Content-Type': 'application/json',
       },
@@ -121,6 +196,11 @@ class ApiService {
           config.headers['X-Attempt-Token'] = this.attemptToken;
         }
 
+        // Increase timeout for certain endpoints that might take longer
+        if (config.url?.includes('/monthly-exams') && config.method === 'get') {
+          config.timeout = 60000; // 60 seconds for fetching exams
+        }
+
         return config;
       },
       (error) => {
@@ -132,11 +212,29 @@ class ApiService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
+        // Handle timeout errors specifically
+        if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+          console.error('Request timeout:', error.config?.url);
+          // Enhance error with more context
+          error.userMessage = 'The request took too long. Please check your connection and try again.';
+        }
+
+        // Handle network errors (server not reachable)
+        if (error.code === 'ERR_NETWORK' || !error.response) {
+          console.error('Network error:', error);
+          error.userMessage = 'Cannot connect to server. Please ensure the backend is running.';
+        }
+
         if (error.response?.status === 401) {
           // Handle unauthorized access
           localStorage.removeItem('auth_token');
           window.location.href = '/login';
         }
+
+        if (error.response?.status === 500) {
+          error.userMessage = 'Server error. Please try again later.';
+        }
+
         return Promise.reject(error);
       }
     );
@@ -170,25 +268,56 @@ class ApiService {
     return response.data;
   }
 
-  // Exam endpoints
-  async getExams(): Promise<Exam[]> {
+  // Exam endpoints - CRUD operations
+  async getExams(): Promise<MonthlyExam[]> {
     try {
-      const response = await this.axiosInstance.get('/monthly-exams');
+      const response = await this.axiosInstance.get('/monthly-exams', {
+        timeout: 60000, // 60 seconds for this specific request
+      });
       return response.data.data || [];
     } catch (error: any) {
       console.error('Error fetching exams:', error);
+      
+      // Handle timeout errors gracefully
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        console.warn('Request timeout. The server may be slow or unresponsive.');
+        // Return empty array on timeout to prevent UI crash
+        return [];
+      }
+
+      // Handle network errors
+      if (error.code === 'ERR_NETWORK' || !error.response) {
+        console.warn('Network error. Please check if the backend server is running.');
+        return [];
+      }
+
       // Return empty array if database is not set up
       if (error.response?.status === 500) {
         console.warn('Database connection error. Please ensure the database is set up and running.');
         return [];
       }
+      
       throw error;
     }
   }
 
-  async getExam(id: string): Promise<Exam> {
+  async getExam(id: string | number): Promise<MonthlyExam> {
     const response = await this.axiosInstance.get(`/monthly-exams/${id}`);
     return response.data.data;
+  }
+
+  async createExam(examData: Partial<MonthlyExam>): Promise<MonthlyExam> {
+    const response = await this.axiosInstance.post('/monthly-exams', examData);
+    return response.data.data;
+  }
+
+  async updateExam(id: string | number, examData: Partial<MonthlyExam>): Promise<MonthlyExam> {
+    const response = await this.axiosInstance.put(`/monthly-exams/${id}`, examData);
+    return response.data.data;
+  }
+
+  async deleteExam(id: string | number): Promise<void> {
+    await this.axiosInstance.delete(`/monthly-exams/${id}`);
   }
 
   // Start exam attempt
@@ -272,6 +401,88 @@ class ApiService {
   async sendProctoringEvents(events: Omit<ProctoringEvent, 'id'>[]): Promise<ProctoringEvent[]> {
     const response = await this.axiosInstance.post('/proctoring-events/batch', { events });
     return response.data.data;
+  }
+
+  // Reference data endpoints for forms
+  async getSchools(): Promise<School[]> {
+    const response = await this.axiosInstance.get('/schools');
+    return response.data.data || [];
+  }
+
+  async getGrades(schoolId?: number): Promise<Grade[]> {
+    const url = schoolId ? `/grades?school_id=${schoolId}` : '/grades';
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getSections(gradeId?: number): Promise<Section[]> {
+    const url = gradeId ? `/sections?grade_id=${gradeId}` : '/sections';
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  // Question Bank endpoints
+  async getQuestionBanks(): Promise<QuestionBank[]> {
+    const response = await this.axiosInstance.get('/question-banks');
+    return response.data.data || [];
+  }
+
+  // Question endpoints
+  async getQuestions(bankId?: number): Promise<BackendQuestion[]> {
+    const url = bankId ? `/questions?bank_id=${bankId}` : '/questions';
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getQuestion(id: string | number): Promise<BackendQuestion> {
+    const response = await this.axiosInstance.get(`/questions/${id}`);
+    return response.data.data;
+  }
+
+  // Exam Question endpoints
+  async getExamQuestions(examId: string | number): Promise<ExamQuestion[]> {
+    const response = await this.axiosInstance.get(`/exam-questions?monthly_exam_id=${examId}`);
+    return response.data.data || [];
+  }
+
+  async addExamQuestion(examId: string | number, examQuestionData: {
+    question_id: number;
+    marks?: number;
+    sequence?: number;
+    pool_tag?: string;
+  }): Promise<ExamQuestion> {
+    const response = await this.axiosInstance.post('/exam-questions', {
+      monthly_exam_id: examId,
+      ...examQuestionData,
+    });
+    return response.data.data;
+  }
+
+  async updateExamQuestion(examQuestionId: number, examQuestionData: {
+    marks?: number;
+    sequence?: number;
+    pool_tag?: string;
+  }): Promise<ExamQuestion> {
+    const response = await this.axiosInstance.put(`/exam-questions/${examQuestionId}`, examQuestionData);
+    return response.data.data;
+  }
+
+  async deleteExamQuestion(examQuestionId: number): Promise<void> {
+    await this.axiosInstance.delete(`/exam-questions/${examQuestionId}`);
+  }
+
+  // Batch operations
+  async addExamQuestions(examId: string | number, examQuestions: Array<{
+    question_id: number;
+    marks?: number;
+    sequence?: number;
+    pool_tag?: string;
+  }>): Promise<ExamQuestion[]> {
+    const response = await this.axiosInstance.post('/exam-questions/batch', {
+      monthly_exam_id: examId,
+      questions: examQuestions,
+    });
+    return response.data.data || [];
   }
 }
 
