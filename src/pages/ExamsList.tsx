@@ -76,8 +76,16 @@ const ExamsList: React.FC = () => {
             <Card className="text-center p-8">
               <div className="text-red-500 text-5xl mb-4">⚠️</div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Error Loading Exams</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                There was a problem loading your exams. Please try again later.
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                There was a problem loading your exams. This might be because:
+              </p>
+              <ul className="text-left text-gray-600 dark:text-gray-400 mb-6 space-y-2 max-w-md mx-auto">
+                <li>• MySQL database is not running</li>
+                <li>• The 'school' database doesn't exist</li>
+                <li>• Database migrations haven't been run</li>
+              </ul>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
+                Please check your backend setup and try again.
               </p>
               <Button onClick={() => window.location.reload()}>
                 Retry

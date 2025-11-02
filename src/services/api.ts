@@ -172,8 +172,18 @@ class ApiService {
 
   // Exam endpoints
   async getExams(): Promise<Exam[]> {
-    const response = await this.axiosInstance.get('/monthly-exams');
-    return response.data.data;
+    try {
+      const response = await this.axiosInstance.get('/monthly-exams');
+      return response.data.data || [];
+    } catch (error: any) {
+      console.error('Error fetching exams:', error);
+      // Return empty array if database is not set up
+      if (error.response?.status === 500) {
+        console.warn('Database connection error. Please ensure the database is set up and running.');
+        return [];
+      }
+      throw error;
+    }
   }
 
   async getExam(id: string): Promise<Exam> {
