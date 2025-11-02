@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import ProgressBar from '../components/ProgressBar';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedClass, setSelectedClass] = useState('Class 10A');
 
   const mockStats = {
@@ -40,10 +41,24 @@ const AdminDashboard: React.FC = () => {
         </div>
         
         <nav className="hidden items-center gap-8 md:flex">
-          <a className="text-sm font-medium hover:text-primary" href="#">Dashboard</a>
-          <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary" href="#">Exams</a>
-          <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary" href="#">Students</a>
-          <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary" href="#">Reports</a>
+          <Link 
+            to="/admin" 
+            className={`text-sm font-medium hover:text-primary ${location.pathname === '/admin' ? 'text-primary' : 'text-muted-light dark:text-muted-dark'}`}
+          >
+            Dashboard
+          </Link>
+          <Link 
+            to="/exams" 
+            className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary"
+          >
+            Exams
+          </Link>
+          <button className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary">
+            Students
+          </button>
+          <button className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary">
+            Reports
+          </button>
         </nav>
         
         <div className="flex items-center gap-4">
@@ -62,10 +77,10 @@ const AdminDashboard: React.FC = () => {
           <h3 className="px-4 pb-2 pt-4 text-lg font-bold tracking-tight">Classes</h3>
           <nav className="flex flex-col">
             {classes.map((className) => (
-              <a
+              <button
                 key={className}
                 onClick={() => setSelectedClass(className)}
-                className={`flex items-center justify-between gap-4 px-4 py-3 text-base font-medium rounded-lg cursor-pointer transition-colors ${
+                className={`flex items-center justify-between gap-4 px-4 py-3 text-base font-medium rounded-lg cursor-pointer transition-colors w-full text-left ${
                   selectedClass === className
                     ? 'bg-primary/10 dark:bg-primary/20 text-primary'
                     : 'text-muted-light dark:text-muted-dark hover:bg-subtle-light dark:hover:bg-subtle-dark hover:text-foreground-light dark:hover:text-foreground-dark'
@@ -75,7 +90,7 @@ const AdminDashboard: React.FC = () => {
                 <svg className="shrink-0" fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
                   <path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
                 </svg>
-              </a>
+              </button>
             ))}
           </nav>
         </aside>
