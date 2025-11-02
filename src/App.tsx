@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/StudentDashboard';
 import ResultsPage from './pages/ResultsPage';
@@ -17,6 +18,7 @@ import SchoolsManagement from './pages/SchoolsManagement';
 import TeachersManagement from './pages/TeachersManagement';
 import StudentsManagement from './pages/StudentsManagement';
 import EnrollmentsManagement from './pages/EnrollmentsManagement';
+import GradeStudents from './pages/GradeStudents';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -35,7 +37,11 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    element: <Layout />,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: '/dashboard',
@@ -72,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: '/admin/grades',
         element: <GradesManagement />,
+      },
+      {
+        path: '/admin/grades/:gradeId/students',
+        element: <GradeStudents />,
       },
       {
         path: '/admin/sections',
