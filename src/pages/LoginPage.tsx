@@ -1,36 +1,71 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/Card';
+import Toast from '../components/Toast';
+import apiService from '../services/api';
+import type { User } from '../services/api';
 
 const LoginPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    password: '',
-    grade: ''
+    password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      const from = (location.state as any)?.from?.pathname || '/admin';
+      navigate(from, { replace: true });
+    }
+  }, [navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
+    setShowToast(false);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, always redirect to dashboard
-    navigate('/dashboard');
-    setLoading(false);
+    try {
+      // Call backend login API
+      const response = await apiService.login(formData.email, formData.password);
+      
+      if (response.token && response.user) {
+        // Store auth token and user info
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        
+        // Redirect to the page user was trying to access, or admin dashboard
+        const from = (location.state as any)?.from?.pathname || '/admin';
+        navigate(from, { replace: true });
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error ||
+                          error.message || 
+                          'Invalid email or password. Please check your credentials.';
+      setError(errorMessage);
+      setShowToast(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
+    setError('');
   };
 
   return (
@@ -57,59 +92,26 @@ const LoginPage: React.FC = () => {
         </div>
 
         <Card className="mb-6">
-          <div className="flex mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-            <button
-              onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                isLogin 
-                  ? 'bg-white dark:bg-card-dark text-primary shadow-sm' 
-                  : 'text-gray-600 dark:text-gray-400 hover:text-primary'
-              }`}
-            >
-              Login 🚀
-            </button>
-            <button
-              onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                !isLogin 
-                  ? 'bg-white dark:bg-card-dark text-primary shadow-sm' 
-                  : 'text-gray-600 dark:text-gray-400 hover:text-primary'
-              }`}
-            >
-              Sign Up ✨
-            </button>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Your Name 👋
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required={!isLogin}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-card-dark text-gray-900 dark:text-white"
-                  placeholder="Enter your name"
-                />
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email 📧
+                Email or Username 📧
               </label>
               <input
-                type="email"
+                type="text"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-card-dark text-gray-900 dark:text-white"
-                placeholder="your.email@example.com"
+                placeholder="dev@dev.com or developer"
+                autoComplete="username"
               />
             </div>
 
@@ -124,68 +126,41 @@ const LoginPage: React.FC = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-card-dark text-gray-900 dark:text-white"
-                placeholder="Create a strong password"
+                placeholder="Enter your password"
+                autoComplete="current-password"
               />
             </div>
-
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Grade 📚
-                </label>
-                <select
-                  name="grade"
-                  value={formData.grade}
-                  onChange={handleInputChange}
-                  required={!isLogin}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-card-dark text-gray-900 dark:text-white"
-                >
-                  <option value="">Select your grade</option>
-                  <option value="6">Grade 6</option>
-                  <option value="7">Grade 7</option>
-                  <option value="8">Grade 8</option>
-                  <option value="9">Grade 9</option>
-                  <option value="10">Grade 10</option>
-                  <option value="11">Grade 11</option>
-                  <option value="12">Grade 12</option>
-                </select>
-              </div>
-            )}
 
             <Button
               type="submit"
               loading={loading}
               className="w-full mt-6"
-              icon={<span>{isLogin ? '🚀' : '✨'}</span>}
+              icon={<span>🚀</span>}
             >
-              {isLogin ? 'Login to Continue' : 'Create Account'}
+              Login to Continue
             </Button>
           </form>
-        </Card>
 
-        {/* Demo buttons */}
-        <div className="text-center space-y-3">
-          <p className="text-sm text-gray-500 dark:text-gray-400">Quick Demo Access:</p>
-          <div className="flex gap-2 justify-center">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/dashboard')}
-              icon={<span>👨‍🎓</span>}
-            >
-              Student Demo
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/admin')}
-              icon={<span>👩‍🏫</span>}
-            >
-              Teacher Demo
-            </Button>
+          {/* Default credentials hint */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2">
+              Default Credentials:
+            </p>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
+              <p><strong>Email/Username:</strong> dev@dev.com or developer</p>
+              <p><strong>Password:</strong> dev</p>
+            </div>
           </div>
-        </div>
+        </Card>
       </div>
+
+      {/* Toast Notification */}
+      <Toast
+        message={error || 'Invalid credentials. Please check your email and password.'}
+        type="error"
+        isVisible={showToast && !!error}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   );
 };

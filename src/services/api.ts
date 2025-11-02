@@ -1,6 +1,5 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import localforage from 'localforage';
+import type { AxiosInstance } from 'axios';
 
 // Define TypeScript interfaces for our data models
 export interface User {
@@ -339,8 +338,37 @@ class ApiService {
 
   // Authentication endpoints
   async login(email: string, password: string): Promise<{ user: User; token: string }> {
-    const response = await this.axiosInstance.post('/login', { email, password });
-    return response.data;
+    // Create a new axios instance without auth token for login
+    const loginInstance = axios.create({
+      baseURL: this.axiosInstance.defaults.baseURL,
+      timeout: this.axiosInstance.defaults.timeout,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const response = await loginInstance.post('/login', { email, password });
+    return {
+      user: response.data.data?.user || response.data.user,
+      token: response.data.data?.token || response.data.token || response.data.data?.access_token || response.data.access_token,
+    };
+  }
+
+  async getCurrentUser(): Promise<User> {
+    const response = await this.axiosInstance.get('/user');
+    return response.data.data || response.data;
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await this.axiosInstance.post('/logout');
+    } catch (error) {
+      // Even if logout fails on backend, clear local storage
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+    }
   }
 
   // Exam endpoints - CRUD operations
