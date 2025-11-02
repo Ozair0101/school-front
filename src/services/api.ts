@@ -39,6 +39,74 @@ export interface Section {
   updated_at?: string;
 }
 
+export interface Teacher {
+  id: number;
+  school_id: number;
+  full_name: string;
+  email: string;
+  phone?: string;
+  school?: School;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Student {
+  id: number;
+  school_id: number;
+  admission_no: string;
+  first_name: string;
+  last_name: string;
+  dob?: string;
+  gender?: 'male' | 'female' | 'other';
+  contact?: {
+    phone?: string;
+    email?: string;
+    address?: string;
+  } | string;
+  school?: School;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Enrollment {
+  id: number;
+  student_id: number;
+  grade_id: number;
+  section_id: number;
+  academic_year: string;
+  roll_no: string;
+  active: boolean;
+  student?: Student;
+  grade?: Grade;
+  section?: Section;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Subject {
+  id: number;
+  school_id: number;
+  name: string;
+  code: string;
+  default_max_marks: number;
+  pass_marks: number;
+  school?: School;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface TeacherSubject {
+  id: number;
+  teacher_id: number;
+  subject_id: number;
+  grade_id: number;
+  teacher?: Teacher;
+  subject?: Subject;
+  grade?: Grade;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface MonthlyExam {
   id: number;
   school_id: number;
@@ -501,6 +569,199 @@ class ApiService {
 
   async deleteSection(id: number): Promise<void> {
     await this.axiosInstance.delete(`/sections/${id}`);
+  }
+
+  // Teacher CRUD operations
+  async getTeachers(): Promise<Teacher[]> {
+    const response = await this.axiosInstance.get('/teachers');
+    return response.data.data || [];
+  }
+
+  async getTeacher(id: number): Promise<Teacher> {
+    const response = await this.axiosInstance.get(`/teachers/${id}`);
+    return response.data.data;
+  }
+
+  async createTeacher(teacherData: {
+    school_id: number;
+    full_name: string;
+    email: string;
+    phone?: string;
+  }): Promise<Teacher> {
+    const response = await this.axiosInstance.post('/teachers', teacherData);
+    return response.data.data;
+  }
+
+  async updateTeacher(id: number, teacherData: {
+    school_id?: number;
+    full_name?: string;
+    email?: string;
+    phone?: string;
+  }): Promise<Teacher> {
+    const response = await this.axiosInstance.put(`/teachers/${id}`, teacherData);
+    return response.data.data;
+  }
+
+  async deleteTeacher(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/teachers/${id}`);
+  }
+
+  // Student CRUD operations
+  async getStudents(): Promise<Student[]> {
+    const response = await this.axiosInstance.get('/students');
+    return response.data.data || [];
+  }
+
+  async getStudent(id: number): Promise<Student> {
+    const response = await this.axiosInstance.get(`/students/${id}`);
+    return response.data.data;
+  }
+
+  async createStudent(studentData: {
+    school_id: number;
+    admission_no: string;
+    first_name: string;
+    last_name: string;
+    dob?: string;
+    gender?: 'male' | 'female' | 'other';
+    contact?: {
+      phone?: string;
+      email?: string;
+      address?: string;
+    };
+  }): Promise<Student> {
+    const response = await this.axiosInstance.post('/students', studentData);
+    return response.data.data;
+  }
+
+  async updateStudent(id: number, studentData: {
+    school_id?: number;
+    admission_no?: string;
+    first_name?: string;
+    last_name?: string;
+    dob?: string;
+    gender?: 'male' | 'female' | 'other';
+    contact?: {
+      phone?: string;
+      email?: string;
+      address?: string;
+    };
+  }): Promise<Student> {
+    const response = await this.axiosInstance.put(`/students/${id}`, studentData);
+    return response.data.data;
+  }
+
+  async deleteStudent(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/students/${id}`);
+  }
+
+  // Enrollment CRUD operations
+  async getEnrollments(): Promise<Enrollment[]> {
+    const response = await this.axiosInstance.get('/enrollments');
+    return response.data.data || [];
+  }
+
+  async getEnrollment(id: number): Promise<Enrollment> {
+    const response = await this.axiosInstance.get(`/enrollments/${id}`);
+    return response.data.data;
+  }
+
+  async createEnrollment(enrollmentData: {
+    student_id: number;
+    grade_id: number;
+    section_id: number;
+    academic_year: string;
+    roll_no: string;
+    active?: boolean;
+  }): Promise<Enrollment> {
+    const response = await this.axiosInstance.post('/enrollments', enrollmentData);
+    return response.data.data;
+  }
+
+  async updateEnrollment(id: number, enrollmentData: {
+    student_id?: number;
+    grade_id?: number;
+    section_id?: number;
+    academic_year?: string;
+    roll_no?: string;
+    active?: boolean;
+  }): Promise<Enrollment> {
+    const response = await this.axiosInstance.put(`/enrollments/${id}`, enrollmentData);
+    return response.data.data;
+  }
+
+  async deleteEnrollment(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/enrollments/${id}`);
+  }
+
+  // Subject CRUD operations
+  async getSubjects(): Promise<Subject[]> {
+    const response = await this.axiosInstance.get('/subjects');
+    return response.data.data || [];
+  }
+
+  async getSubject(id: number): Promise<Subject> {
+    const response = await this.axiosInstance.get(`/subjects/${id}`);
+    return response.data.data;
+  }
+
+  async createSubject(subjectData: {
+    school_id: number;
+    name: string;
+    code: string;
+    default_max_marks: number;
+    pass_marks: number;
+  }): Promise<Subject> {
+    const response = await this.axiosInstance.post('/subjects', subjectData);
+    return response.data.data;
+  }
+
+  async updateSubject(id: number, subjectData: {
+    school_id?: number;
+    name?: string;
+    code?: string;
+    default_max_marks?: number;
+    pass_marks?: number;
+  }): Promise<Subject> {
+    const response = await this.axiosInstance.put(`/subjects/${id}`, subjectData);
+    return response.data.data;
+  }
+
+  async deleteSubject(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/subjects/${id}`);
+  }
+
+  // Teacher Subject CRUD operations
+  async getTeacherSubjects(): Promise<TeacherSubject[]> {
+    const response = await this.axiosInstance.get('/teacher-subjects');
+    return response.data.data || [];
+  }
+
+  async getTeacherSubject(id: number): Promise<TeacherSubject> {
+    const response = await this.axiosInstance.get(`/teacher-subjects/${id}`);
+    return response.data.data;
+  }
+
+  async createTeacherSubject(teacherSubjectData: {
+    teacher_id: number;
+    subject_id: number;
+    grade_id: number;
+  }): Promise<TeacherSubject> {
+    const response = await this.axiosInstance.post('/teacher-subjects', teacherSubjectData);
+    return response.data.data;
+  }
+
+  async updateTeacherSubject(id: number, teacherSubjectData: {
+    teacher_id?: number;
+    subject_id?: number;
+    grade_id?: number;
+  }): Promise<TeacherSubject> {
+    const response = await this.axiosInstance.put(`/teacher-subjects/${id}`, teacherSubjectData);
+    return response.data.data;
+  }
+
+  async deleteTeacherSubject(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/teacher-subjects/${id}`);
   }
 
   // Question Bank endpoints
