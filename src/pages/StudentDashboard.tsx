@@ -32,10 +32,8 @@ const StudentDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      <Header user={user} />
-      
-      <main className="px-4 sm:px-6 lg:px-20 xl:px-40 py-8">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+      <div className="px-4 sm:px-6 lg:px-20 xl:px-40">
         <div className="max-w-5xl mx-auto">
           {/* Welcome Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
@@ -183,7 +181,7 @@ const StudentDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
