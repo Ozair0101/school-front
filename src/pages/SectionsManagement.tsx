@@ -5,6 +5,8 @@ import type { Section, Grade } from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
+import { useFormSubmission } from '../hooks/useFormSubmission';
 
 const SectionsManagement: React.FC = () => {
   const queryClient = useQueryClient();
@@ -13,6 +15,29 @@ const SectionsManagement: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [selectedGradeId, setSelectedGradeId] = useState<number | null>(null);
+
+  // Form submission hooks
+  const formSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['sections', selectedGradeId]);
+      setShowFormModal(false);
+      setSelectedSection(null);
+    },
+    successMessage: selectedSection ? 'Section updated successfully!' : 'Section created successfully!',
+    clearForm: () => {
+      const form = document.getElementById('section-form') as HTMLFormElement;
+      if (form) form.reset();
+    },
+  });
+
+  const deleteSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['sections', selectedGradeId]);
+      setShowDeleteModal(false);
+      setSelectedSection(null);
+    },
+    successMessage: 'Section deleted successfully!',
+  });
 
   // Fetch grades for filter and form
   const { data: grades = [] } = useQuery<Grade[]>(
@@ -31,42 +56,19 @@ const SectionsManagement: React.FC = () => {
 
   // Create/Update mutation
   const saveMutation = useMutation(
-    (data: { grade_id: number; name: string }) => {
+    async (data: { grade_id: number; name: string }) => {
       if (selectedSection) {
-        return apiService.updateSection(selectedSection.id, data);
+        return await apiService.updateSection(selectedSection.id, data);
       } else {
-        return apiService.createSection(data);
+        return await apiService.createSection(data);
       }
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['sections', selectedGradeId]);
-        setShowFormModal(false);
-        setSelectedSection(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to save section:', error);
-        const errorMessage = error.response?.data?.message || 
-                            error.response?.data?.errors || 
-                            'Failed to save section';
-        alert(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
-      },
     }
   );
 
   // Delete mutation
   const deleteMutation = useMutation(
-    (id: number) => apiService.deleteSection(id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['sections', selectedGradeId]);
-        setShowDeleteModal(false);
-        setSelectedSection(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to delete section:', error);
-        alert(error.response?.data?.message || 'Failed to delete section');
-      },
+    async (id: number) => {
+      return await apiService.deleteSection(id);
     }
   );
 
@@ -87,22 +89,30 @@ const SectionsManagement: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedSection) {
-      deleteMutation.mutate(selectedSection.id);
+      deleteSubmission.handleSubmit(
+        () => deleteMutation.mutateAsync(selectedSection.id),
+        'Section deleted successfully!',
+        'Failed to delete section'
+      );
     }
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const gradeId = parseInt(formData.get('grade_id') as string);
     const name = formData.get('name') as string;
 
     if (!gradeId || !name) {
-      alert('Please fill in all required fields');
+      formSubmission.showToast('Please fill in all required fields', 'error');
       return;
     }
 
-    saveMutation.mutate({ grade_id: gradeId, name });
+    await formSubmission.handleSubmit(
+      () => saveMutation.mutateAsync({ grade_id: gradeId, name }),
+      selectedSection ? 'Section updated successfully!' : 'Section created successfully!',
+      selectedSection ? 'Failed to update section' : 'Failed to create section'
+    );
   };
 
   if (isLoading) {
@@ -320,19 +330,19 @@ const SectionsManagement: React.FC = () => {
                 setShowFormModal(false);
                 setSelectedSection(null);
               }}
-              disabled={saveMutation.isLoading}
+              disabled={formSubmission.isLoading || saveMutation.isLoading}
             >
               Cancel
             </Button>
             <Button
-              onClick={(e) => {
+              onClick={() => {
                 const form = document.getElementById('section-form') as HTMLFormElement;
                 if (form) {
                   form.requestSubmit();
                 }
               }}
-              disabled={saveMutation.isLoading}
-              loading={saveMutation.isLoading}
+              disabled={formSubmission.isLoading || saveMutation.isLoading}
+              loading={formSubmission.isLoading || saveMutation.isLoading}
             >
               {selectedSection ? 'Update' : 'Create'}
             </Button>
@@ -393,16 +403,16 @@ const SectionsManagement: React.FC = () => {
                 setShowDeleteModal(false);
                 setSelectedSection(null);
               }}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
             >
               Cancel
             </Button>
             <button
               onClick={handleConfirmDelete}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {deleteMutation.isLoading && (
+              {(deleteSubmission.isLoading || deleteMutation.isLoading) && (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               )}
               Delete
@@ -432,6 +442,20 @@ const SectionsManagement: React.FC = () => {
           </p>
         </div>
       </Modal>
+
+      {/* Toast Notifications */}
+      <Toast
+        message={formSubmission.toast.message}
+        type={formSubmission.toast.type}
+        isVisible={formSubmission.toast.isVisible}
+        onClose={formSubmission.hideToast}
+      />
+      <Toast
+        message={deleteSubmission.toast.message}
+        type={deleteSubmission.toast.type}
+        isVisible={deleteSubmission.toast.isVisible}
+        onClose={deleteSubmission.hideToast}
+      />
     </div>
   );
 };
