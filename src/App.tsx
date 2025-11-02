@@ -14,6 +14,9 @@ import ExamQuestions from './pages/ExamQuestions';
 import GradesManagement from './pages/GradesManagement';
 import SectionsManagement from './pages/SectionsManagement';
 import SchoolsManagement from './pages/SchoolsManagement';
+import TeachersManagement from './pages/TeachersManagement';
+import StudentsManagement from './pages/StudentsManagement';
+import EnrollmentsManagement from './pages/EnrollmentsManagement';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -77,6 +80,18 @@ const router = createBrowserRouter([
       {
         path: '/admin/schools',
         element: <SchoolsManagement />,
+      },
+      {
+        path: '/admin/teachers',
+        element: <TeachersManagement />,
+      },
+      {
+        path: '/admin/students',
+        element: <StudentsManagement />,
+      },
+      {
+        path: '/admin/enrollments',
+        element: <EnrollmentsManagement />,
       },
       {
         path: '/teacher/monitoring',
