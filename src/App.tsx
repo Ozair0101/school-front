@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/StudentDashboard';
 import ResultsPage from './pages/ResultsPage';
@@ -8,6 +9,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import ExamsList from './pages/ExamsList';
 import ExamDetail from './pages/ExamDetail';
 import ExamCanvas from './pages/ExamCanvas';
+import ExamManagement from './pages/ExamManagement';
+import ExamQuestions from './pages/ExamQuestions';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -26,36 +29,49 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: '/dashboard',
-    element: <StudentDashboard />,
-  },
-  {
-    path: '/exams',
-    element: <ExamsList />,
-  },
-  {
-    path: '/exam/:examId/attempt/:attemptId',
-    element: <ExamCanvas />,
-  },
-  {
-    path: '/exam/:examId',
-    element: <ExamDetail />,
-  },
-  {
-    path: '/results/:examId',
-    element: <ResultsPage />,
-  },
-  {
-    path: '/admin',
-    element: <AdminDashboard />,
-  },
-  {
-    path: '/teacher/monitoring',
-    element: <TeacherMonitoring />,
-  },
-  {
-    path: '/teacher/grading',
-    element: <TeacherGradingQueue />,
+    element: <Layout />,
+    children: [
+      {
+        path: '/dashboard',
+        element: <StudentDashboard />,
+      },
+      {
+        path: '/exams',
+        element: <ExamsList />,
+      },
+      {
+        path: '/exam/:examId/attempt/:attemptId',
+        element: <ExamCanvas />,
+      },
+      {
+        path: '/exam/:examId',
+        element: <ExamDetail />,
+      },
+      {
+        path: '/results/:examId',
+        element: <ResultsPage />,
+      },
+      {
+        path: '/admin',
+        element: <AdminDashboard />,
+      },
+      {
+        path: '/admin/exams',
+        element: <ExamManagement />,
+      },
+      {
+        path: '/admin/exams/:examId/questions',
+        element: <ExamQuestions />,
+      },
+      {
+        path: '/teacher/monitoring',
+        element: <TeacherMonitoring />,
+      },
+      {
+        path: '/teacher/grading',
+        element: <TeacherGradingQueue />,
+      },
+    ],
   },
 ]);
 
