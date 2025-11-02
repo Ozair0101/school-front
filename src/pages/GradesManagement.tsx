@@ -5,6 +5,8 @@ import type { Grade, School } from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
+import { useFormSubmission } from '../hooks/useFormSubmission';
 
 const GradesManagement: React.FC = () => {
   const queryClient = useQueryClient();
@@ -13,6 +15,29 @@ const GradesManagement: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedGrade, setSelectedGrade] = useState<Grade | null>(null);
   const [selectedSchoolId, setSelectedSchoolId] = useState<number | null>(null);
+
+  // Form submission hooks
+  const formSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['grades', selectedSchoolId]);
+      setShowFormModal(false);
+      setSelectedGrade(null);
+    },
+    successMessage: selectedGrade ? 'Grade updated successfully!' : 'Grade created successfully!',
+    clearForm: () => {
+      const form = document.getElementById('grade-form') as HTMLFormElement;
+      if (form) form.reset();
+    },
+  });
+
+  const deleteSubmission = useFormSubmission({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['grades', selectedSchoolId]);
+      setShowDeleteModal(false);
+      setSelectedGrade(null);
+    },
+    successMessage: 'Grade deleted successfully!',
+  });
 
   // Fetch schools for filter and form
   const { data: schools = [] } = useQuery<School[]>('schools', () => apiService.getSchools());
@@ -28,42 +53,19 @@ const GradesManagement: React.FC = () => {
 
   // Create/Update mutation
   const saveMutation = useMutation(
-    (data: { school_id: number; name: string; level: number }) => {
+    async (data: { school_id: number; name: string; level: number }) => {
       if (selectedGrade) {
-        return apiService.updateGrade(selectedGrade.id, data);
+        return await apiService.updateGrade(selectedGrade.id, data);
       } else {
-        return apiService.createGrade(data);
+        return await apiService.createGrade(data);
       }
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['grades', selectedSchoolId]);
-        setShowFormModal(false);
-        setSelectedGrade(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to save grade:', error);
-        const errorMessage = error.response?.data?.message || 
-                            error.response?.data?.errors || 
-                            'Failed to save grade';
-        alert(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
-      },
     }
   );
 
   // Delete mutation
   const deleteMutation = useMutation(
-    (id: number) => apiService.deleteGrade(id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['grades', selectedSchoolId]);
-        setShowDeleteModal(false);
-        setSelectedGrade(null);
-      },
-      onError: (error: any) => {
-        console.error('Failed to delete grade:', error);
-        alert(error.response?.data?.message || 'Failed to delete grade');
-      },
+    async (id: number) => {
+      return await apiService.deleteGrade(id);
     }
   );
 
@@ -84,11 +86,15 @@ const GradesManagement: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (selectedGrade) {
-      deleteMutation.mutate(selectedGrade.id);
+      deleteSubmission.handleSubmit(
+        () => deleteMutation.mutateAsync(selectedGrade.id),
+        'Grade deleted successfully!',
+        'Failed to delete grade'
+      );
     }
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const schoolId = parseInt(formData.get('school_id') as string);
@@ -96,11 +102,15 @@ const GradesManagement: React.FC = () => {
     const level = parseInt(formData.get('level') as string);
 
     if (!schoolId || !name || !level) {
-      alert('Please fill in all required fields');
+      formSubmission.showToast('Please fill in all required fields', 'error');
       return;
     }
 
-    saveMutation.mutate({ school_id: schoolId, name, level });
+    await formSubmission.handleSubmit(
+      () => saveMutation.mutateAsync({ school_id: schoolId, name, level }),
+      selectedGrade ? 'Grade updated successfully!' : 'Grade created successfully!',
+      selectedGrade ? 'Failed to update grade' : 'Failed to create grade'
+    );
   };
 
   if (isLoading) {
@@ -321,19 +331,19 @@ const GradesManagement: React.FC = () => {
                 setShowFormModal(false);
                 setSelectedGrade(null);
               }}
-              disabled={saveMutation.isLoading}
+              disabled={formSubmission.isLoading || saveMutation.isLoading}
             >
               Cancel
             </Button>
             <Button
-              onClick={(e) => {
+              onClick={() => {
                 const form = document.getElementById('grade-form') as HTMLFormElement;
                 if (form) {
                   form.requestSubmit();
                 }
               }}
-              disabled={saveMutation.isLoading}
-              loading={saveMutation.isLoading}
+              disabled={formSubmission.isLoading || saveMutation.isLoading}
+              loading={formSubmission.isLoading || saveMutation.isLoading}
             >
               {selectedGrade ? 'Update' : 'Create'}
             </Button>
@@ -412,16 +422,16 @@ const GradesManagement: React.FC = () => {
                 setShowDeleteModal(false);
                 setSelectedGrade(null);
               }}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
             >
               Cancel
             </Button>
             <button
               onClick={handleConfirmDelete}
-              disabled={deleteMutation.isLoading}
+              disabled={deleteSubmission.isLoading || deleteMutation.isLoading}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {deleteMutation.isLoading && (
+              {(deleteSubmission.isLoading || deleteMutation.isLoading) && (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               )}
               Delete
@@ -451,6 +461,20 @@ const GradesManagement: React.FC = () => {
           </p>
         </div>
       </Modal>
+
+      {/* Toast Notifications */}
+      <Toast
+        message={formSubmission.toast.message}
+        type={formSubmission.toast.type}
+        isVisible={formSubmission.toast.isVisible}
+        onClose={formSubmission.hideToast}
+      />
+      <Toast
+        message={deleteSubmission.toast.message}
+        type={deleteSubmission.toast.type}
+        isVisible={deleteSubmission.toast.isVisible}
+        onClose={deleteSubmission.hideToast}
+      />
     </div>
   );
 };
