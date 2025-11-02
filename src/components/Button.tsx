@@ -22,9 +22,9 @@ const Button: React.FC<ButtonProps> = ({
   
   const variantClasses = {
     primary: 'bg-primary text-white hover:bg-primary/90 transform hover:scale-105',
-    secondary: 'bg-white dark:bg-card-dark text-primary border-2 border-primary hover:bg-primary/10',
-    outline: 'border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary',
-    ghost: 'text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/10'
+    secondary: 'bg-white dark:bg-card-dark text-gray-900 dark:text-gray-100 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-primary',
+    outline: 'border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:border-primary hover:text-gray-900 dark:hover:text-gray-100',
+    ghost: 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
   };
   
   const sizeClasses = {
