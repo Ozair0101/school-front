@@ -3,7 +3,6 @@ import { useQuery } from 'react-query';
 import io from 'socket.io-client';
 import apiService from '../../services/api';
 import type { StudentAttempt } from '../../services/api';
-import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 
@@ -101,24 +100,22 @@ const TeacherMonitoring: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark">
-        <Header />
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <Card className="text-center p-8">
               <div className="text-red-500 text-5xl mb-4">⚠️</div>
@@ -131,16 +128,14 @@ const TeacherMonitoring: React.FC = () => {
               </Button>
             </Card>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      <Header />
-      
-      <main className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Page header */}
           <div className="mb-8">
@@ -322,7 +317,7 @@ const TeacherMonitoring: React.FC = () => {
             )}
           </div>
         </div>
-      </main>
+      </div>
       
       {/* Attempt details modal */}
       {selectedAttempt && (
