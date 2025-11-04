@@ -166,16 +166,20 @@ export interface Question {
 }
 
 export interface Choice {
-  id: string;
+  id: number;
+  question_id: number;
   choice_text: string;
   is_correct: boolean;
   position?: number;
+  question?: BackendQuestion;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface StudentAttempt {
-  id: string;
-  monthly_exam_id: string;
-  student_id: string;
+  id: number;
+  monthly_exam_id: number;
+  student_id: number;
   started_at?: string;
   finished_at?: string;
   duration_seconds?: number;
@@ -185,28 +189,58 @@ export interface StudentAttempt {
   ip_address?: string;
   device_info?: string;
   attempt_token: string;
+  monthly_exam?: MonthlyExam;
+  student?: Student;
+  attempt_answers?: AttemptAnswer[];
+  proctoring_events?: ProctoringEvent[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface AttemptAnswer {
-  id?: string;
-  attempt_id: string;
-  question_id: string;
-  choice_id?: string;
+  id: number;
+  attempt_id: number;
+  question_id: number;
+  choice_id?: number;
   answer_text?: string;
   uploaded_file?: string;
   marks_awarded?: number;
   auto_graded?: boolean;
-  graded_by?: string;
+  graded_by?: number; // Teacher ID
   graded_at?: string;
   saved_at?: string;
+  attempt?: StudentAttempt;
+  question?: BackendQuestion;
+  choice?: Choice;
+  graded_by_teacher?: Teacher; // Teacher object when relationship is loaded
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ProctoringEvent {
-  id?: string;
-  attempt_id: string;
+  id: number;
+  attempt_id: number;
   event_type: string;
   event_time: string;
   details?: any;
+  attempt?: StudentAttempt;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ExamAggregate {
+  id: number;
+  monthly_exam_id: number;
+  student_id: number;
+  total_marks?: number;
+  percent?: number;
+  rank?: number;
+  published: boolean;
+  published_at?: string;
+  monthly_exam?: MonthlyExam;
+  student?: Student;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface QuestionBank {
@@ -215,6 +249,10 @@ export interface QuestionBank {
   name: string;
   created_by: number;
   school?: School;
+  creator?: Teacher;
+  questions_count?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ExamQuestion {
@@ -224,8 +262,20 @@ export interface ExamQuestion {
   marks?: number;
   sequence?: number;
   pool_tag?: string;
-  question?: Question;
+  question?: BackendQuestion;
   monthly_exam?: MonthlyExam;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ExamSubject {
+  id: number;
+  monthly_exam_id: number;
+  subject_id: number;
+  max_marks: number;
+  pass_marks: number;
+  monthly_exam?: MonthlyExam;
+  subject?: Subject;
   created_at?: string;
   updated_at?: string;
 }
@@ -239,8 +289,10 @@ export interface BackendQuestion {
   default_marks: number;
   metadata?: any;
   bank?: QuestionBank;
-  author?: any;
+  author?: Teacher;
   choices?: Choice[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 class ApiService {
@@ -442,13 +494,13 @@ class ApiService {
 
 
   // Save answer
-  async saveAnswer(attemptId: string, answer: Omit<AttemptAnswer, 'id'>): Promise<AttemptAnswer> {
+  async saveAnswer(attemptId: number | string, answer: Omit<AttemptAnswer, 'id'>): Promise<AttemptAnswer> {
     const response = await this.axiosInstance.post(`/student-attempts/${attemptId}/answer`, answer);
     return response.data.data;
   }
 
   // Submit exam
-  async submitAttempt(attemptId: string): Promise<{ 
+  async submitAttempt(attemptId: number | string): Promise<{ 
     status: 'submitted' | 'queued_for_grading'; 
     total_score?: number; 
     percent?: number 
@@ -458,7 +510,7 @@ class ApiService {
   }
 
   // Get attempt status
-  async getAttemptStatus(attemptId: string): Promise<{ 
+  async getAttemptStatus(attemptId: number | string): Promise<{ 
     status: string; 
     total_score?: number; 
     percent?: number; 
@@ -466,6 +518,126 @@ class ApiService {
   }> {
     const response = await this.axiosInstance.get(`/student-attempts/${attemptId}/status`);
     return response.data.data;
+  }
+
+  // Student Attempt CRUD endpoints
+  async getStudentAttempts(params?: {
+    monthly_exam_id?: number;
+    student_id?: number;
+    status?: 'in_progress' | 'submitted' | 'grading' | 'graded' | 'abandoned';
+  }): Promise<StudentAttempt[]> {
+    let url = '/student-attempts';
+    const queryParams = new URLSearchParams();
+    if (params?.monthly_exam_id) queryParams.append('monthly_exam_id', params.monthly_exam_id.toString());
+    if (params?.student_id) queryParams.append('student_id', params.student_id.toString());
+    if (params?.status) queryParams.append('status', params.status);
+    if (queryParams.toString()) url += `?${queryParams.toString()}`;
+    
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getStudentAttempt(id: number): Promise<StudentAttempt> {
+    const response = await this.axiosInstance.get(`/student-attempts/${id}`);
+    return response.data.data;
+  }
+
+  async createStudentAttempt(attemptData: {
+    monthly_exam_id: number;
+    student_id: number;
+    started_at?: string;
+    finished_at?: string;
+    duration_seconds?: number;
+    status?: 'in_progress' | 'submitted' | 'grading' | 'graded' | 'abandoned';
+    total_score?: number;
+    percent?: number;
+    ip_address?: string;
+    device_info?: string;
+    attempt_token?: string;
+  }): Promise<StudentAttempt> {
+    const response = await this.axiosInstance.post('/student-attempts', attemptData);
+    return response.data.data;
+  }
+
+  async updateStudentAttempt(id: number, attemptData: {
+    monthly_exam_id?: number;
+    student_id?: number;
+    started_at?: string;
+    finished_at?: string;
+    duration_seconds?: number;
+    status?: 'in_progress' | 'submitted' | 'grading' | 'graded' | 'abandoned';
+    total_score?: number;
+    percent?: number;
+    ip_address?: string;
+    device_info?: string;
+    attempt_token?: string;
+  }): Promise<StudentAttempt> {
+    const response = await this.axiosInstance.put(`/student-attempts/${id}`, attemptData);
+    return response.data.data;
+  }
+
+  async deleteStudentAttempt(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/student-attempts/${id}`);
+  }
+
+  // Attempt Answer CRUD endpoints
+  async getAttemptAnswers(params?: {
+    attempt_id?: number;
+    question_id?: number;
+    graded?: boolean;
+    auto_graded?: boolean;
+  }): Promise<AttemptAnswer[]> {
+    let url = '/attempt-answers';
+    const queryParams = new URLSearchParams();
+    if (params?.attempt_id) queryParams.append('attempt_id', params.attempt_id.toString());
+    if (params?.question_id) queryParams.append('question_id', params.question_id.toString());
+    if (params?.graded !== undefined) queryParams.append('graded', params.graded.toString());
+    if (params?.auto_graded !== undefined) queryParams.append('auto_graded', params.auto_graded.toString());
+    if (queryParams.toString()) url += `?${queryParams.toString()}`;
+    
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getAttemptAnswer(id: number): Promise<AttemptAnswer> {
+    const response = await this.axiosInstance.get(`/attempt-answers/${id}`);
+    return response.data.data;
+  }
+
+  async createAttemptAnswer(answerData: {
+    attempt_id: number;
+    question_id: number;
+    choice_id?: number;
+    answer_text?: string;
+    uploaded_file?: string;
+    marks_awarded?: number;
+    auto_graded?: boolean;
+    graded_by?: number;
+    graded_at?: string;
+    saved_at?: string;
+  }): Promise<AttemptAnswer> {
+    const response = await this.axiosInstance.post('/attempt-answers', answerData);
+    return response.data.data;
+  }
+
+  async updateAttemptAnswer(id: number, answerData: {
+    attempt_id?: number;
+    question_id?: number;
+    choice_id?: number | null;
+    answer_text?: string | null;
+    uploaded_file?: string | null;
+    marks_awarded?: number | null;
+    auto_graded?: boolean;
+    graded_by?: number | null;
+    graded_at?: string | null;
+    saved_at?: string | null;
+  }): Promise<AttemptAnswer> {
+    const response = await this.axiosInstance.put(`/attempt-answers/${id}`, answerData);
+    return response.data.data;
+  }
+
+  async deleteAttemptAnswer(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/attempt-answers/${id}`);
   }
 
   // Upload file presign
@@ -489,16 +661,116 @@ class ApiService {
     });
   }
 
-  // Proctoring events
-  async sendProctoringEvent(event: Omit<ProctoringEvent, 'id'>): Promise<ProctoringEvent> {
+  // Send proctoring event
+  async sendProctoringEvent(event: Omit<ProctoringEvent, 'id' | 'created_at' | 'updated_at'>): Promise<ProctoringEvent> {
     const response = await this.axiosInstance.post('/proctoring-events', event);
     return response.data.data;
   }
 
   // Batch send proctoring events
-  async sendProctoringEvents(events: Omit<ProctoringEvent, 'id'>[]): Promise<ProctoringEvent[]> {
+  async sendProctoringEvents(events: Omit<ProctoringEvent, 'id' | 'created_at' | 'updated_at'>[]): Promise<ProctoringEvent[]> {
     const response = await this.axiosInstance.post('/proctoring-events/batch', { events });
     return response.data.data;
+  }
+
+  // Proctoring Event CRUD endpoints
+  async getProctoringEvents(params?: {
+    attempt_id?: number;
+    event_type?: string;
+    start_date?: string;
+    end_date?: string;
+  }): Promise<ProctoringEvent[]> {
+    let url = '/proctoring-events';
+    const queryParams = new URLSearchParams();
+    if (params?.attempt_id) queryParams.append('attempt_id', params.attempt_id.toString());
+    if (params?.event_type) queryParams.append('event_type', params.event_type);
+    if (params?.start_date) queryParams.append('start_date', params.start_date);
+    if (params?.end_date) queryParams.append('end_date', params.end_date);
+    if (queryParams.toString()) url += `?${queryParams.toString()}`;
+    
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getProctoringEvent(id: number): Promise<ProctoringEvent> {
+    const response = await this.axiosInstance.get(`/proctoring-events/${id}`);
+    return response.data.data;
+  }
+
+  async createProctoringEvent(eventData: {
+    attempt_id: number;
+    event_type: string;
+    event_time?: string;
+    details?: any;
+  }): Promise<ProctoringEvent> {
+    const response = await this.axiosInstance.post('/proctoring-events', eventData);
+    return response.data.data;
+  }
+
+  async updateProctoringEvent(id: number, eventData: {
+    attempt_id?: number;
+    event_type?: string;
+    event_time?: string;
+    details?: any;
+  }): Promise<ProctoringEvent> {
+    const response = await this.axiosInstance.put(`/proctoring-events/${id}`, eventData);
+    return response.data.data;
+  }
+
+  async deleteProctoringEvent(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/proctoring-events/${id}`);
+  }
+
+  // Exam Aggregate CRUD endpoints
+  async getExamAggregates(params?: {
+    monthly_exam_id?: number;
+    student_id?: number;
+    published?: boolean;
+  }): Promise<ExamAggregate[]> {
+    let url = '/exam-aggregates';
+    const queryParams = new URLSearchParams();
+    if (params?.monthly_exam_id) queryParams.append('monthly_exam_id', params.monthly_exam_id.toString());
+    if (params?.student_id) queryParams.append('student_id', params.student_id.toString());
+    if (params?.published !== undefined) queryParams.append('published', params.published.toString());
+    if (queryParams.toString()) url += `?${queryParams.toString()}`;
+    
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getExamAggregate(id: number): Promise<ExamAggregate> {
+    const response = await this.axiosInstance.get(`/exam-aggregates/${id}`);
+    return response.data.data;
+  }
+
+  async createExamAggregate(aggregateData: {
+    monthly_exam_id: number;
+    student_id: number;
+    total_marks?: number;
+    percent?: number;
+    rank?: number;
+    published?: boolean;
+    published_at?: string;
+  }): Promise<ExamAggregate> {
+    const response = await this.axiosInstance.post('/exam-aggregates', aggregateData);
+    return response.data.data;
+  }
+
+  async updateExamAggregate(id: number, aggregateData: {
+    monthly_exam_id?: number;
+    student_id?: number;
+    total_marks?: number;
+    percent?: number;
+    rank?: number;
+    published?: boolean;
+    published_at?: string;
+  }): Promise<ExamAggregate> {
+    const response = await this.axiosInstance.put(`/exam-aggregates/${id}`, aggregateData);
+    return response.data.data;
+  }
+
+  async deleteExamAggregate(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/exam-aggregates/${id}`);
   }
 
   // Reference data endpoints for forms
@@ -794,14 +1066,47 @@ class ApiService {
   }
 
   // Question Bank endpoints
-  async getQuestionBanks(): Promise<QuestionBank[]> {
-    const response = await this.axiosInstance.get('/question-banks');
+  async getQuestionBanks(schoolId?: number): Promise<QuestionBank[]> {
+    const url = schoolId ? `/question-banks?school_id=${schoolId}` : '/question-banks';
+    const response = await this.axiosInstance.get(url);
     return response.data.data || [];
   }
 
+  async getQuestionBank(id: number): Promise<QuestionBank> {
+    const response = await this.axiosInstance.get(`/question-banks/${id}`);
+    return response.data.data;
+  }
+
+  async createQuestionBank(questionBankData: {
+    school_id: number;
+    name: string;
+    created_by: number;
+  }): Promise<QuestionBank> {
+    const response = await this.axiosInstance.post('/question-banks', questionBankData);
+    return response.data.data;
+  }
+
+  async updateQuestionBank(id: number, questionBankData: {
+    school_id?: number;
+    name?: string;
+    created_by?: number;
+  }): Promise<QuestionBank> {
+    const response = await this.axiosInstance.put(`/question-banks/${id}`, questionBankData);
+    return response.data.data;
+  }
+
+  async deleteQuestionBank(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/question-banks/${id}`);
+  }
+
   // Question endpoints
-  async getQuestions(bankId?: number): Promise<BackendQuestion[]> {
-    const url = bankId ? `/questions?bank_id=${bankId}` : '/questions';
+  async getQuestions(bankId?: number, type?: string): Promise<BackendQuestion[]> {
+    let url = '/questions';
+    const params = new URLSearchParams();
+    if (bankId) params.append('bank_id', bankId.toString());
+    if (type) params.append('type', type);
+    if (params.toString()) url += `?${params.toString()}`;
+    
     const response = await this.axiosInstance.get(url);
     return response.data.data || [];
   }
@@ -809,6 +1114,81 @@ class ApiService {
   async getQuestion(id: string | number): Promise<BackendQuestion> {
     const response = await this.axiosInstance.get(`/questions/${id}`);
     return response.data.data;
+  }
+
+  async createQuestion(questionData: {
+    bank_id: number;
+    author_id: number;
+    type: 'mcq' | 'tf' | 'numeric' | 'short' | 'essay' | 'file';
+    prompt: string;
+    default_marks: number;
+    metadata?: any;
+    choices?: Array<{
+      choice_text: string;
+      is_correct?: boolean;
+      position?: number;
+    }>;
+  }): Promise<BackendQuestion> {
+    const response = await this.axiosInstance.post('/questions', questionData);
+    return response.data.data;
+  }
+
+  async updateQuestion(id: number, questionData: {
+    bank_id?: number;
+    author_id?: number;
+    type?: 'mcq' | 'tf' | 'numeric' | 'short' | 'essay' | 'file';
+    prompt?: string;
+    default_marks?: number;
+    metadata?: any;
+    choices?: Array<{
+      id?: number;
+      choice_text: string;
+      is_correct?: boolean;
+      position?: number;
+    }>;
+  }): Promise<BackendQuestion> {
+    const response = await this.axiosInstance.put(`/questions/${id}`, questionData);
+    return response.data.data;
+  }
+
+  async deleteQuestion(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/questions/${id}`);
+  }
+
+  // Choice endpoints
+  async getChoices(questionId?: number): Promise<Choice[]> {
+    const url = questionId ? `/choices?question_id=${questionId}` : '/choices';
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getChoice(id: number): Promise<Choice> {
+    const response = await this.axiosInstance.get(`/choices/${id}`);
+    return response.data.data;
+  }
+
+  async createChoice(choiceData: {
+    question_id: number;
+    choice_text: string;
+    is_correct?: boolean;
+    position?: number;
+  }): Promise<Choice> {
+    const response = await this.axiosInstance.post('/choices', choiceData);
+    return response.data.data;
+  }
+
+  async updateChoice(id: number, choiceData: {
+    question_id?: number;
+    choice_text?: string;
+    is_correct?: boolean;
+    position?: number;
+  }): Promise<Choice> {
+    const response = await this.axiosInstance.put(`/choices/${id}`, choiceData);
+    return response.data.data;
+  }
+
+  async deleteChoice(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/choices/${id}`);
   }
 
   // Exam Question endpoints
@@ -831,9 +1211,9 @@ class ApiService {
   }
 
   async updateExamQuestion(examQuestionId: number, examQuestionData: {
-    marks?: number;
-    sequence?: number;
-    pool_tag?: string;
+    marks?: number | null;
+    sequence?: number | null;
+    pool_tag?: string | null;
   }): Promise<ExamQuestion> {
     const response = await this.axiosInstance.put(`/exam-questions/${examQuestionId}`, examQuestionData);
     return response.data.data;
@@ -855,6 +1235,42 @@ class ApiService {
       questions: examQuestions,
     });
     return response.data.data || [];
+  }
+
+  // Exam Subject CRUD operations
+  async getExamSubjects(examId?: string | number): Promise<ExamSubject[]> {
+    const url = examId ? `/exam-subjects?monthly_exam_id=${examId}` : '/exam-subjects';
+    const response = await this.axiosInstance.get(url);
+    return response.data.data || [];
+  }
+
+  async getExamSubject(id: number): Promise<ExamSubject> {
+    const response = await this.axiosInstance.get(`/exam-subjects/${id}`);
+    return response.data.data;
+  }
+
+  async createExamSubject(examSubjectData: {
+    monthly_exam_id: number;
+    subject_id: number;
+    max_marks: number;
+    pass_marks: number;
+  }): Promise<ExamSubject> {
+    const response = await this.axiosInstance.post('/exam-subjects', examSubjectData);
+    return response.data.data;
+  }
+
+  async updateExamSubject(id: number, examSubjectData: {
+    monthly_exam_id?: number;
+    subject_id?: number;
+    max_marks?: number;
+    pass_marks?: number;
+  }): Promise<ExamSubject> {
+    const response = await this.axiosInstance.put(`/exam-subjects/${id}`, examSubjectData);
+    return response.data.data;
+  }
+
+  async deleteExamSubject(id: number): Promise<void> {
+    await this.axiosInstance.delete(`/exam-subjects/${id}`);
   }
 }
 
