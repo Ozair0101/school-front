@@ -12,6 +12,7 @@ import ExamDetail from './pages/ExamDetail';
 import ExamCanvas from './pages/ExamCanvas';
 import ExamManagement from './pages/ExamManagement';
 import ExamQuestions from './pages/ExamQuestions';
+import ExamSubjectsManagement from './pages/ExamSubjectsManagement';
 import GradesManagement from './pages/GradesManagement';
 import SectionsManagement from './pages/SectionsManagement';
 import SchoolsManagement from './pages/SchoolsManagement';
@@ -21,6 +22,12 @@ import EnrollmentsManagement from './pages/EnrollmentsManagement';
 import GradeStudents from './pages/GradeStudents';
 import SubjectManagement from './pages/SubjectManagement';
 import TeacherAssignmentManagement from './pages/TeacherAssignmentManagement';
+import QuestionBankManagement from './pages/QuestionBankManagement';
+import QuestionManagement from './pages/QuestionManagement';
+import StudentAttemptManagement from './pages/StudentAttemptManagement';
+import AttemptAnswerManagement from './pages/AttemptAnswerManagement';
+import ProctoringEventManagement from './pages/ProctoringEventManagement';
+import ExamAggregateManagement from './pages/ExamAggregateManagement';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -78,6 +85,10 @@ const router = createBrowserRouter([
         element: <ExamQuestions />,
       },
       {
+        path: '/admin/exams/:examId/subjects',
+        element: <ExamSubjectsManagement />,
+      },
+      {
         path: '/admin/grades',
         element: <GradesManagement />,
       },
@@ -112,6 +123,30 @@ const router = createBrowserRouter([
       {
         path: '/admin/teacher-assignments',
         element: <TeacherAssignmentManagement />,
+      },
+      {
+        path: '/admin/question-banks',
+        element: <QuestionBankManagement />,
+      },
+      {
+        path: '/admin/question-banks/:bankId/questions',
+        element: <QuestionManagement />,
+      },
+      {
+        path: '/admin/student-attempts',
+        element: <StudentAttemptManagement />,
+      },
+      {
+        path: '/admin/attempt-answers',
+        element: <AttemptAnswerManagement />,
+      },
+      {
+        path: '/admin/proctoring-events',
+        element: <ProctoringEventManagement />,
+      },
+      {
+        path: '/admin/exam-aggregates',
+        element: <ExamAggregateManagement />,
       },
       {
         path: '/teacher/monitoring',
