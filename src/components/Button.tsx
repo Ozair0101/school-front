@@ -21,10 +21,10 @@ const Button: React.FC<ButtonProps> = ({
   const baseClasses = 'font-bold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-primary/90 transform hover:scale-105',
-    secondary: 'bg-white dark:bg-card-dark text-gray-900 dark:text-gray-100 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-primary',
-    outline: 'border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:border-primary hover:text-gray-900 dark:hover:text-gray-100',
-    ghost: 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
+    primary: 'bg-primary text-black hover:bg-primary/90 transform hover:scale-105',
+    secondary: 'bg-white dark:bg-card-dark text-black dark:text-black border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-primary',
+    outline: 'border-2 border-gray-300 dark:border-gray-600 text-black dark:text-black hover:border-primary hover:text-black dark:hover:text-black',
+    ghost: 'text-black dark:text-black hover:text-black dark:hover:text-black hover:bg-gray-100 dark:hover:bg-gray-800'
   };
   
   const sizeClasses = {

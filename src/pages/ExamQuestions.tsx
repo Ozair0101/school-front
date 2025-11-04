@@ -259,7 +259,10 @@ const ExamQuestions: React.FC = () => {
                 Total Marks
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white break-words">
-                {examQuestions.reduce((sum, eq) => sum + Number(eq.marks || eq.question?.default_marks || 0), 0).toFixed(2)}
+                {(examQuestions?.reduce((sum, eq) => {
+                  const marks = Number(eq.marks || eq.question?.default_marks || 0);
+                  return sum + (isNaN(marks) ? 0 : marks);
+                }, 0) || 0).toFixed(2)}
               </div>
             </Card>
             <Card>

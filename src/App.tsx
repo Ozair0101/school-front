@@ -19,6 +19,8 @@ import TeachersManagement from './pages/TeachersManagement';
 import StudentsManagement from './pages/StudentsManagement';
 import EnrollmentsManagement from './pages/EnrollmentsManagement';
 import GradeStudents from './pages/GradeStudents';
+import SubjectManagement from './pages/SubjectManagement';
+import TeacherAssignmentManagement from './pages/TeacherAssignmentManagement';
 import TeacherMonitoring from './pages/Teacher/Monitoring';
 import TeacherGradingQueue from './pages/Teacher/GradingQueue';
 import './App.css';
@@ -102,6 +104,14 @@ const router = createBrowserRouter([
       {
         path: '/admin/enrollments',
         element: <EnrollmentsManagement />,
+      },
+      {
+        path: '/admin/subjects',
+        element: <SubjectManagement />,
+      },
+      {
+        path: '/admin/teacher-assignments',
+        element: <TeacherAssignmentManagement />,
       },
       {
         path: '/teacher/monitoring',

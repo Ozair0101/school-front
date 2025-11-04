@@ -723,8 +723,9 @@ class ApiService {
   }
 
   // Subject CRUD operations
-  async getSubjects(): Promise<Subject[]> {
-    const response = await this.axiosInstance.get('/subjects');
+  async getSubjects(schoolId?: number): Promise<Subject[]> {
+    const url = schoolId ? `/subjects?school_id=${schoolId}` : '/subjects';
+    const response = await this.axiosInstance.get(url);
     return response.data.data || [];
   }
 
