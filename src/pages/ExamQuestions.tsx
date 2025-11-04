@@ -20,6 +20,9 @@ const ExamQuestions: React.FC = () => {
   const [selectedBankId, setSelectedBankId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
+  const [defaultMarks, setDefaultMarks] = useState<number | null>(null);
+  const [defaultSequence, setDefaultSequence] = useState<number | null>(null);
+  const [defaultPoolTag, setDefaultPoolTag] = useState<string>('');
 
   // Fetch exam details
   const { data: exam } = useQuery<MonthlyExam>(
@@ -78,7 +81,7 @@ const ExamQuestions: React.FC = () => {
 
   // Update question mutation
   const updateQuestionMutation = useMutation(
-    ({ id, data }: { id: number; data: { marks?: number; sequence?: number; pool_tag?: string } }) =>
+    ({ id, data }: { id: number; data: { marks?: number | null; sequence?: number | null; pool_tag?: string | null } }) =>
       apiService.updateExamQuestion(id, data),
     {
       onSuccess: () => {
@@ -128,8 +131,9 @@ const ExamQuestions: React.FC = () => {
       const question = availableQuestions.find(q => q.id === questionId);
       return {
         question_id: questionId,
-        marks: question?.default_marks,
-        sequence: examQuestions.length + index + 1,
+        marks: defaultMarks !== null ? defaultMarks : (question?.default_marks || undefined),
+        sequence: defaultSequence !== null ? defaultSequence + index : (examQuestions.length + index + 1),
+        pool_tag: defaultPoolTag || undefined,
       };
     });
 
@@ -361,7 +365,18 @@ const ExamQuestions: React.FC = () => {
                         </td>
                         <td className="px-4 py-4">
                           <div className="text-sm text-gray-900 dark:text-white">
-                            {examQuestion.marks || examQuestion.question?.default_marks || 0}
+                            {examQuestion.marks !== null && examQuestion.marks !== undefined ? (
+                              <span className="flex items-center gap-1">
+                                <span>{examQuestion.marks}</span>
+                                {examQuestion.marks !== examQuestion.question?.default_marks && (
+                                  <span className="text-xs text-primary" title="Marks overridden from default">
+                                    *
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              examQuestion.question?.default_marks || 0
+                            )}
                           </div>
                         </td>
                         <td className="px-4 py-4">
@@ -430,6 +445,9 @@ const ExamQuestions: React.FC = () => {
           setSelectedBankId(null);
           setSearchTerm('');
           setFilterType('all');
+          setDefaultMarks(null);
+          setDefaultSequence(null);
+          setDefaultPoolTag('');
         }}
         title="Add Questions to Exam"
         size="xl"
@@ -510,6 +528,66 @@ const ExamQuestions: React.FC = () => {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-800 dark:text-white"
             />
           </div>
+
+          {/* Default Settings for Selected Questions */}
+          {selectedQuestions.length > 0 && (
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                Default Settings for Selected Questions
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Marks Override (optional)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Use question default"
+                    value={defaultMarks || ''}
+                    onChange={(e) => setDefaultMarks(e.target.value ? parseFloat(e.target.value) : null)}
+                    min="0"
+                    step="0.01"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-700 dark:text-white"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Leave empty to use question default
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Starting Sequence (optional)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Auto-increment"
+                    value={defaultSequence || ''}
+                    onChange={(e) => setDefaultSequence(e.target.value ? parseInt(e.target.value) : null)}
+                    min="1"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-700 dark:text-white"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Leave empty for auto-increment (null = randomized)
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Pool Tag (optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., easy, medium, hard"
+                    value={defaultPoolTag}
+                    onChange={(e) => setDefaultPoolTag(e.target.value)}
+                    maxLength={255}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-700 dark:text-white"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Group questions for random selection
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Questions List */}
           <div className="max-h-96 overflow-y-auto space-y-2">
@@ -605,9 +683,9 @@ const ExamQuestions: React.FC = () => {
                 updateQuestionMutation.mutate({
                   id: selectedQuestion.id,
                   data: {
-                    marks: marksInput.value ? parseFloat(marksInput.value) : undefined,
-                    sequence: sequenceInput.value ? parseInt(sequenceInput.value) : undefined,
-                    pool_tag: poolTagInput.value || undefined,
+                    marks: marksInput.value !== '' ? parseFloat(marksInput.value) : null,
+                    sequence: sequenceInput.value !== '' ? parseInt(sequenceInput.value) : null,
+                    pool_tag: poolTagInput.value || null,
                   },
                 });
               }}
@@ -631,16 +709,25 @@ const ExamQuestions: React.FC = () => {
             </div>
             <div>
               <label htmlFor="edit-marks" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Marks
+                Marks Override
+                {selectedQuestion.question?.default_marks && (
+                  <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">
+                    (Default: {selectedQuestion.question.default_marks})
+                  </span>
+                )}
               </label>
               <input
                 id="edit-marks"
                 type="number"
-                defaultValue={selectedQuestion.marks || selectedQuestion.question?.default_marks || 0}
+                defaultValue={selectedQuestion.marks !== null && selectedQuestion.marks !== undefined ? selectedQuestion.marks : ''}
                 min="0"
                 step="0.01"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-800 dark:text-white"
+                placeholder={`Default: ${selectedQuestion.question?.default_marks || 0}`}
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Override the default marks for this question in this exam. Leave empty to use question default ({selectedQuestion.question?.default_marks || 0}).
+              </p>
             </div>
             <div>
               <label htmlFor="edit-sequence" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -652,7 +739,11 @@ const ExamQuestions: React.FC = () => {
                 defaultValue={selectedQuestion.sequence || ''}
                 min="1"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-800 dark:text-white"
+                placeholder="Leave empty for randomized"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Order number for question display. Leave empty (null) to randomize order.
+              </p>
             </div>
             <div>
               <label htmlFor="edit-pool-tag" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -666,6 +757,9 @@ const ExamQuestions: React.FC = () => {
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-gray-800 dark:text-white"
                 placeholder="e.g., easy, medium, hard"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Tag questions for random selection from pools. Questions with the same tag can be randomly selected.
+              </p>
             </div>
           </div>
         )}
