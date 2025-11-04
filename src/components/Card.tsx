@@ -4,7 +4,7 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
-  padding?: 'sm' | 'md' | 'lg';
+  padding?: 'sm' | 'md' | 'lg' | 'none';
 }
 
 const Card: React.FC<CardProps> = ({
@@ -19,7 +19,8 @@ const Card: React.FC<CardProps> = ({
   const paddingClasses = {
     sm: 'p-4',
     md: 'p-6',
-    lg: 'p-8'
+    lg: 'p-8',
+    none: ''
   };
   
   const classes = `${baseClasses} ${hoverClasses} ${paddingClasses[padding]} ${className}`;
